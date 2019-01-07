@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>案件裁定- 文书可视化工具集</title>
+    <script>isPageNew = true;</script>
+
+    <link rel="stylesheet" th:href="@{css/bootstrap.css}"/>
+    <link rel="stylesheet" th:href="@{css/style.css}"/>
+    <link rel="stylesheet" th:href="@{css/font-awesome.css}"/>
+    <link rel="stylesheet" th:href="@{css/index.css}"/>
+    <link rel="stylesheet" th:href="@{css/common.css}"/>
+    <link rel="stylesheet" th:href="@{css/custom.css}"/>
+    <!-- <link rel="stylesheet" th:href="@{css/evaluate.css}"/> -->
+
+    <script th:src="@{js/ref/jquery-3.2.1.min.js}"></script>
+    <script th:src="@{js/ref/jquery-ui.js}"></script>
+    <script th:src="@{js/ref/bootstrap.js}"></script>
+    <script th:src="@{js/ref/jtopo-0.4.8-min.js}"></script>
+</head>
+
+<body style="background-color: white">
+<section class="container-fluid">
+    <div class="row">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                            data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">切换导航</span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+                        <span class="icon-bar"></span></button>
+                    <a class="navbar-brand" href="manage.html">法官工作空间</a></div>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="menu-label"><a id="userLabel" title="查看或修改个人信息" data-toggle="modal"
+                                                  data-target="#seeUserInfo">个人信息</a></li>
+                        <li><a id='exist_click'>退出登录</a></li>
+                    </ul>
+                    <form action="" method="post" class="navbar-form navbar-right" role="search">
+                        <div class="input-group">
+                            <input type="text" class="form-control" autocomplete="off" placeholder="键入关键字搜索"
+                                   maxlength="15">
+                            <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">搜索</button>
+                            </span></div>
+                    </form>
+                </div>
+            </div>
+            <ol class="breadcrumb" style="font-size: 19px">
+                <li>
+                    <a href="/upload">质证与采证</a>
+                </li>
+                <li>
+                    <a href="/model">证据链建模</a>
+                </li>
+                <li>
+                    <a href="/logic-new">说理与法条推荐</a>
+                </li>
+                <li>
+                    <strong><a class="active" href="#">说理评估</a></strong>
+                </li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="page-content container12"  style="margin-top: 10px">
+        <ul class="nav nav-pills">
+            <li class="active"><a href="#" onclick="evaluateFactWithLaw()">事实到法条的评估</a></li>
+            <li><a href="#" onclick="evaluateLawWithFact()">法条到事实的评估</a></li>
+            <li><a href="#" onclick="evaluateLawWithJudgement()">法条到结论的评估</a></li>
+            <li><a href="#" onclick="evaluateJudgementWithLaw()">结论到法条的评估</a></li>
+            <li><a href="#" onclick="bundleEvaluateFactWithLaw()">事实到法条的批量评估</a></li>
+            <li><a href="#" onclick="bundleEvaluateLawWithFact()">法条到事实的批量评估</a></li>
+            <li><a href="#" onclick="bundleEvaluateLawWithJudgement()">法条到结论的批量评估</a></li>
+            <li><a href="#"  onclick="bundleEvaluateJudgementWithLaw()">结论到法条的批量评估</a></li>
+        </ul>
+    </div>
+
+    <div class="page-content container8"  style="margin-top: 30px">
+        <div class="col-md-8  col-md-offset-2">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div style="text-align: center">
+                            <h3 class="panel-title" id="upload-tip">导入单篇文书</h3>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <form class="form-inline" id="upload-form" enctype="multipart/form-data" method="post">
+                            <input class="form-control" type="file" name="ws-file" id="ws-file" style="margin-left:160px;" >
+                            <input class="form-control" type="button" onclick="uploadWS()" value="导入文书并评估" style="margin-left:50px;">
+                        </form>
+                        <div id="upload-result" style="width:60%; margin:20px auto;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12" style="margin-top: 30px;">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div style="text-align: center">
+                            <h3 class="panel-title" id="evaluate-type-heading"> 事实到法条&nbsp;&nbsp;&nbsp;&nbsp;评估结果</h3>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div id="basic-info"></div>
+                        <div id="evaluate-content"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</body>
+
+<script>
+// 全局变量：评估类型
+// 评估类型共有8种：f2l表示factToLaw，事实到法条; l2f表示lawToFact，法条到事实; l2j表示lawToJudgement，法条到结论；j2l表示judgementToLaw，结论到法条。
+// 在这4种前面各加一个b，表示批量评估
+var evaluateType = "f2l";
+// 全局变量：上一次上传的文书文件类型
+// 文件类型共有4种：null表示上一次没有上传文件，xml表示上次上传文件为XML类型的，rar表示上次上传文件为RAR类型的，zip表示上次上传文件为ZIP类型的
+var lastUploadFileType = "null";
+// 全局变量：单个文书的基本信息
+var singleDocuBasicInfo = null;
+// 全局变量：单个文书的评估结果信息
+var singleDocuEvaluateResult = null;
+// 全局变量：批量文书的评估结果信息
+var bundleDocuEvaluateResult = null;
+
+$(function(){
+    $('.nav-pills li').click(function(e){
+        e.preventDefault();
+        $(this).addClass('active').siblings().removeClass('active');
+    });
+});
+
+function evaluateFactWithLaw(){
+    evaluateType = "f2l";
+    document.getElementById("evaluate-type-heading").innerHTML = "事实到法条    评估结果";
+    if(lastUploadFileType != "xml"){ //上一次没有上传文件或者上传的为RAR、ZIP文件，提示用户重新导入文件
+        document.getElementById("upload-tip").innerHTML = "导入单篇文书";
+        document.getElementById("upload-form").innerHTML = '<input class="form-control" type="file" name="ws-file" id="ws-file" style="margin-left:160px;">'+
+            '<input class="form-control" type="button" onclick="uploadWS()" value="导入文书并评估" style="margin-left:50px;">';
+        document.getElementById("upload-result").innerHTML =  "请导入需要分析的文书文件（XML格式）";
+        document.getElementById("evaluate-content").innerHTML =  "";
+    }
+    else{ //上一次上传的文件为XML文件，对该文件进行“事实到法条”的评估
+        document.getElementById("upload-result").innerHTML =  "";
+        singleEvaluate();
+    }
+}
+
+function evaluateLawWithFact(){
+    evaluateType = "l2f";
+    document.getElementById("evaluate-type-heading").innerHTML = "法条到事实    评估结果";
+    if(lastUploadFileType != "xml"){ //上一次没有上传文件或者上传的为RAR、ZIP文件，提示用户重新导入文件
+        document.getElementById("upload-tip").innerHTML = "导入单篇文书";
+        document.getElementById("upload-form").innerHTML = '<input class="form-control" type="file" name="ws-file" id="ws-file" style="margin-left:160px;">'+
+            '<input class="form-control" type="button" onclick="uploadWS()" value="导入文书并评估" style="margin-left:50px;">';
+        document.getElementById("upload-result").innerHTML =  "请导入需要分析的文书文件（XML格式）";
+        document.getElementById("evaluate-content").innerHTML =  "";
+    }
+    else{ //上一次上传的文件为XML文件，对该文件进行“法条到事实”的评估
+        document.getElementById("upload-result").innerHTML =  "";
+        singleEvaluate();
+    }
+}
+
+function evaluateLawWithJudgement(){
+    evaluateType = "l2j";
+    document.getElementById("evaluate-type-heading").innerHTML = "法条到结论    评估结果";
+    if(lastUploadFileType != "xml"){ //上一次没有上传文件或者上传的为RAR、ZIP文件，提示用户重新导入文件
+        document.getElementById("upload-tip").innerHTML = "导入单篇文书";
+        document.getElementById("upload-form").innerHTML = '<input class="form-control" type="file" name="ws-file" id="ws-file" style="margin-left:160px;">'+
+            '<input class="form-control" type="button" onclick="uploadWS()" value="导入文书并评估" style="margin-left:50px;">';
+        document.getElementById("upload-result").innerHTML =  "请导入需要分析的文书文件（XML格式）";
+        document.getElementById("evaluate-content").innerHTML =  "";
+    }
+    else{ //上一次上传的文件为XML文件，对该文件进行“法条到结论”的评估
+        document.getElementById("upload-result").innerHTML =  "";
+        singleEvaluate();
+    }
+}
+
+function evaluateJudgementWithLaw(){
+    evaluateType = "j2l";
+    document.getElementById("evaluate-type-heading").innerHTML = "结论到法条    评估结果";
+    if(lastUploadFileType != "xml"){ //上一次没有上传文件或者上传的为RAR、ZIP文件，提示用户重新导入文件
+        document.getElementById("upload-tip").innerHTML = "导入单篇文书";
+        document.getElementById("upload-form").innerHTML = '<input class="form-control" type="file" name="ws-file" id="ws-file" style="margin-left:160px;">'+
+            '<input class="form-control" type="button" onclick="uploadWS()" value="导入文书并评估" style="margin-left:50px;">';
+        document.getElementById("upload-result").innerHTML =  "请导入需要分析的文书文件（XML格式）";
+        document.getElementById("evaluate-content").innerHTML =  "";
+    }
+    else{ //上一次上传的文件为XML文件，对该文件进行“结论到法条”的评估
+        document.getElementById("upload-result").innerHTML =  "";
+        singleEvaluate();
+    }
+}
+
+function bundleEvaluateFactWithLaw(){
+    evaluateType = "bf2l";
+    document.getElementById("evaluate-type-heading").innerHTML = "事实到法条    批量评估结果";
+    document.getElementById("basic-info").innerHTML = ""; //清空“文书基本信息”的内容
+    if(lastUploadFileType == "null" || lastUploadFileType == "xml"){ //上一次没有上传文件或者上传的为XML文件，提示用户重新导入文件
+        document.getElementById("upload-tip").innerHTML = "导入文书集";
+        document.getElementById("upload-form").innerHTML = '<input class="form-control" type="file" name="ws-file" id="ws-file" style="margin-left:160px;">'+
+            '<input class="form-control" type="button" onclick="uploadWSRAROrZIP()" value="导入文书集并评估" style="margin-left:50px;">';
+        document.getElementById("upload-result").innerHTML =  "请导入需要分析的文书集文件（ZIP格式或RAR格式）";
+        document.getElementById("basic-info").innerHTML =  "";
+        document.getElementById("evaluate-content").innerHTML =  "";
+    }
+    else{ //上一次上传的文件为ZIP或者RAR文件，对该文件进行“事实到法条”的批量评估
+        document.getElementById("upload-result").innerHTML =  "";
+        bundleEvaluate();
+    }
+}
+
+function bundleEvaluateLawWithFact(){
+    evaluateType = "bl2f";
+    document.getElementById("evaluate-type-heading").innerHTML = "法条到事实    批量评估结果";
+    document.getElementById("basic-info").innerHTML = ""; //清空“文书基本信息”的内容
+    if(lastUploadFileType == "null" || lastUploadFileType == "xml"){ //上一次没有上传文件或者上传的为XML文件，提示用户重新导入文件
+        document.getElementById("upload-tip").innerHTML = "导入文书集";
+        document.getElementById("upload-form").innerHTML = '<input class="form-control" type="file" name="ws-file" id="ws-file" style="margin-left:160px;">'+
+            '<input class="form-control" type="button" onclick="uploadWSRAROrZIP()" value="导入文书集并评估" style="margin-left:50px;">';
+        document.getElementById("upload-result").innerHTML =  "请导入需要分析的文书集文件（ZIP格式或RAR格式）";
+        document.getElementById("basic-info").innerHTML =  "";
+        document.getElementById("evaluate-content").innerHTML =  "";
+    }
+    else{ //上一次上传的文件为ZIP或者RAR文件，对该文件进行“法条到事实”的批量评估
+        document.getElementById("upload-result").innerHTML =  "";
+        bundleEvaluate();
+    }
+}
+
+function bundleEvaluateLawWithJudgement(){
+    evaluateType = "bl2j";
+    document.getElementById("evaluate-type-heading").innerHTML = "法条到结论    批量评估结果";
+    document.getElementById("basic-info").innerHTML = ""; //清空“文书基本信息”的内容
+    if(lastUploadFileType == "null" || lastUploadFileType == "xml"){ //上一次没有上传文件或者上传的为XML文件，提示用户重新导入文件
+        document.getElementById("upload-tip").innerHTML = "导入文书集";
+        document.getElementById("upload-form").innerHTML = '<input class="form-control" type="file" name="ws-file" id="ws-file" style="margin-left:160px;">'+
+            '<input class="form-control" type="button" onclick="uploadWSRAROrZIP()" value="导入文书集并评估" style="margin-left:50px;">';
+        document.getElementById("upload-result").innerHTML =  "请导入需要分析的文书集文件（ZIP格式或RAR格式）";
+        document.getElementById("basic-info").innerHTML =  "";
+        document.getElementById("evaluate-content").innerHTML =  "";
+    }
+    else{ //上一次上传的文件为ZIP或者RAR文件，对该文件进行“法条到结论”的批量评估
+        document.getElementById("upload-result").innerHTML =  "";
+        bundleEvaluate();
+    }
+}
+
+function bundleEvaluateJudgementWithLaw(){
+    evaluateType = "bj2l";
+    document.getElementById("evaluate-type-heading").innerHTML = "结论到法条    批量评估结果";
+    document.getElementById("basic-info").innerHTML = ""; //清空“文书基本信息”的内容
+    if(lastUploadFileType == "null" || lastUploadFileType == "xml"){ //上一次没有上传文件或者上传的为XML文件，提示用户重新导入文件
+        document.getElementById("upload-tip").innerHTML = "导入文书集";
+        document.getElementById("upload-form").innerHTML = '<input class="form-control" type="file" name="ws-file" id="ws-file" style="margin-left:160px;">'+
+            '<input class="form-control" type="button" onclick="uploadWSRAROrZIP()" value="导入文书集并评估" style="margin-left:50px;">';
+        document.getElementById("upload-result").innerHTML =  "请导入需要分析的文书集文件（ZIP格式或RAR格式）";
+        document.getElementById("basic-info").innerHTML =  "";
+        document.getElementById("evaluate-content").innerHTML =  "";
+    }
+    else{ //上一次上传的文件为ZIP或者RAR文件，对该文件进行“结论到法条”的批量评估
+        document.getElementById("upload-result").innerHTML =  "";
+        bundleEvaluate();
+    }
+}
+
+function uploadWS(){
+    var formData = new FormData($( "#upload-form" )[0]);
+    $.ajax({
+        type: "POST",
+        url: "/evaluate/uploadXML",
+        data: formData,
+        async: false,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            if(data == "success"){
+                lastUploadFileType = "xml"; //上一次上传的文件类型设为XML
+
+                document.getElementById("upload-result").innerHTML = "<div class='alert alert-success'>导入文件成功，正在进行评估，请稍后......</div>";
+
+                getSingleBasicInfo(); //获取文书中的基本信息，将结果更新到界面中
+                singleEvaluate(); //解析文书内容并进行评估，将结果更新到界面中
+            }
+            else if(data == "type error") {
+                document.getElementById("upload-result").innerHTML = "<div class='alert alert-danger'>仅支持XML格式的文件，请重新导入文件</div>";
+            }
+            else if(data == "empty file") {
+                document.getElementById("upload-result").innerHTML =  "<div class='alert alert-danger'>文件不存在，请重新导入文件</div>";
+            }
+        },
+        error: function () {
+            document.getElementById("upload-result").innerHTML = "<div class='alert alert-danger'>导入失败，请重新导入文件</div>"
+        }
+    });
+}
+
+function uploadWSRAROrZIP(){
+    var fileName = $("#ws-file").val();
+    if(fileName.toLowerCase().substring(fileName.length-3, fileName.length) == "zip"){
+        var formData = new FormData($( "#upload-form" )[0]);
+        $.ajax({
+            type: "POST",
+            url: "/evaluate/uploadZIP",
+            data: formData,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if(data == "success"){
+                    lastUploadFileType = "zip"; //上一次上传的文件类型设为ZIP
+
+                    document.getElementById("upload-result").innerHTML = "<div class='alert alert-success'>导入文件集成功，正在进行评估，请稍后......</div>";
+
+                    bundleEvaluate(); //批量解析文书内容并进行评估，将结果更新到界面中
+                }
+                else if(data == "type error") {
+                    document.getElementById("upload-result").innerHTML = "<div class='alert alert-danger'>仅支持RAR或ZIP格式的文件，请重新导入文件</div>";
+                }
+                else if(data == "empty file") {
+                    document.getElementById("upload-result").innerHTML =  "<div class='alert alert-danger'>文件不存在，请重新导入文件</div>";
+                }
+            },
+            error: function () {
+                document.getElementById("upload-result").innerHTML = "<div class='alert alert-danger'>导入失败，请重新导入文件</div>"
+            }
+        });
+    }
+    else{
+        var formData = new FormData($( "#upload-form" )[0]);
+        $.ajax({
+            type: "POST",
+            url: "/evaluate/uploadRAR",
+            data: formData,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if(data == "success"){
+                    lastUploadFileType = "rar"; //上一次上传的文件类型设为RAR
+
+                    document.getElementById("upload-result").innerHTML = "<div class='alert alert-success'>导入文件集成功，正在进行评估，请稍后......</div>";
+                }
+                else if(data == "type error") {
+                    document.getElementById("upload-result").innerHTML = "<div class='alert alert-danger'>仅支持RAR或ZIP格式的文件，请重新导入文件</div>";
+                }
+                else if(data == "empty file") {
+                    document.getElementById("upload-result").innerHTML =  "<div class='alert alert-danger'>文件不存在，请重新导入文件</div>";
+                }
+            },
+            error: function () {
+                document.getElementById("upload-result").innerHTML = "<div class='alert alert-danger'>导入失败，请重新导入文件</div>"
+            }
+        });
+    }
+}
+
+function getSingleBasicInfo(){
+    $.ajax({
+        type: "GET",
+        url: "/evaluate/getBasicInfo",
+        async: false,
+        dataType: 'json',
+        success: function (data) {
+            var dataObj = eval(data);
+
+            singleDocuBasicInfo = "{'caseId':'"+dataObj.caseId+"', 'caseName':'"+dataObj.caseName+"', 'caseReason':'"+dataObj.caseReason+"', 'judgeName':'"+dataObj.judgeName+"', 'judgeTime':'"+dataObj.judgeTime+"'}"; //更改全局变量的值
+
+            var insertText = "<div class='col-md-12' style='margin-top: 20px'>" +
+                              "<label style='font-weight: bold'>案号：</label><span type='text' style='margin-left: 10px'>" + dataObj.caseId + "</span>" +
+                              "<label style='font-weight: bold; margin-left: 30px;'>承办法官：</label><span type='text' style='margin-left: 10px'>" + dataObj.judgeName + "</span>" +
+                              "<label style='font-weight: bold; margin-left: 30px;'>审判日期：</label><span type='text' style='margin-left: 10px'>" + dataObj.judgeTime + "</span></div>" +
+                              "<div class='col-md-12' style='margin-top: 10px'><label style='font-weight: bold'>案件名称:</label><span type='text' style='margin-left: 10px'>" + dataObj.caseName + "</span></div>" +
+                              "<div class='col-md-12' style='margin-top: 10px'><label style='font-weight: bold'>案由:</label><span type='text' style='margin-left: 10px'>" + dataObj.caseReason + "</span></div>";
+            document.getElementById("basic-info").innerHTML = insertText;
+        }
+    });
+}
+
+function singleEvaluate(){
+    $.ajax({
+        type: "GET",
+        url: "/evaluate/singleEvaluate",
+        data: {"evaluate-type":evaluateType},
+        async: false,
+        dataType: 'json',
+        success: function (data) {
+            var dataObj = eval(data);
+
+            singleDocuEvaluateResult = "["; //更改全局变量的值
+
+            var insertText = "";
+            if (evaluateType == "f2l") { //事实到法条
+                insertText = "<div class='col-md-12' style='margin-top: 20px'><table class='table table-bordered'><thead><tr><th>序号</th><th>事实序号</th><th>事实文本</th><th>相关法条名称</th><th>相关法条正文</th><th>备注</th></tr></thead><tbody>";
+                for (var i=0; i<dataObj.length; i++) {
+                    singleDocuEvaluateResult += "{'col1':'"+(i+1)+"', 'col2':'"+dataObj[i].fojNo + "', 'col3':'"+dataObj[i].fojContent+"', 'col4':'"+dataObj[i].lawName+"', 'col5':'"+dataObj[i].lawContent+"', 'col6':'"+dataObj[i].relevancy+"'},";
+                    insertText += "<tr><td>" + (i+1) + "</td><td>"+dataObj[i].fojNo + "</td><td>" + dataObj[i].fojContent + "</td><td>" + dataObj[i].lawName + "</td><td>" + dataObj[i].lawContent + "</td><td>" + dataObj[i].relevancy + "</td></tr>";
+                }
+            }
+            else if (evaluateType == "l2f") { //法条到事实
+                insertText = "<div class='col-md-12' style='margin-top: 20px'><table class='table table-bordered'><thead><tr><th>序号</th><th>法条名称</th><th>法条正文</th><th>相关事实序号</th><th>相关事实文本</th><th>备注</th></tr></thead><tbody>";
+                for (var i=0; i<dataObj.length; i++) {
+                    singleDocuEvaluateResult += "{'col1':'"+(i+1)+"', 'col2':'"+dataObj[i].lawName + "', 'col3':'"+dataObj[i].lawContent+"', 'col4':'"+dataObj[i].fojNo+"', 'col5':'"+dataObj[i].fojContent+"', 'col6':'"+dataObj[i].relevancy+"'},";
+                    insertText += "<tr><td>" + (i+1) + "</td><td>" + dataObj[i].lawName + "</td><td>" + dataObj[i].lawContent + "</td><td>" + dataObj[i].fojNo + "</td><td>" + dataObj[i].fojContent + "</td><td>" + dataObj[i].relevancy + "</td></tr>";
+                }
+            }
+            else if (evaluateType == "l2j") { //法条到结论
+                insertText = "<div class='col-md-12' style='margin-top: 20px'><table class='table table-bordered'><thead><tr><th>序号</th><th>法条名称</th><th>法条正文</th><th>相关结论序号</th><th>相关结论文本</th><th>备注</th></tr></thead><tbody>";
+                for (var i=0; i<dataObj.length; i++) {
+                    singleDocuEvaluateResult += "{'col1':'"+(i+1)+"', 'col2':'"+dataObj[i].lawName + "', 'col3':'"+dataObj[i].lawContent+"', 'col4':'"+dataObj[i].fojNo+"', 'col5':'"+dataObj[i].fojContent+"', 'col6':'"+dataObj[i].relevancy+"'},";
+                    insertText += "<tr><td>" + (i+1) + "</td><td>" + dataObj[i].lawName + "</td><td>" + dataObj[i].lawContent + "</td><td>" + dataObj[i].fojNo + "</td><td>" + dataObj[i].fojContent + "</td><td>" + dataObj[i].relevancy + "</td></tr>";
+                }
+            }
+            else if (evaluateType == "j2l") { //结论到法条
+                insertText = "<div class='col-md-12' style='margin-top: 20px'><table class='table table-bordered'><thead><tr><th>序号</th><th>结论序号</th><th>结论文本</th><th>相关法条名称</th><th>相关法条正文</th><th>备注</th></tr></thead><tbody>";
+                for (var i=0; i<dataObj.length; i++) {
+                    singleDocuEvaluateResult += "{'col1':'"+(i+1)+"', 'col2':'"+dataObj[i].fojNo + "', 'col3':'"+dataObj[i].fojContent+"', 'col4':'"+dataObj[i].lawName+"', 'col5':'"+dataObj[i].lawContent+"', 'col6':"+dataObj[i].relevancy+"'},";
+                    insertText += "<tr><td>" + (i+1) + "</td><td>"+dataObj[i].fojNo + "</td><td>" + dataObj[i].fojContent + "</td><td>" + dataObj[i].lawName + "</td><td>" + dataObj[i].lawContent + "</td><td>" + dataObj[i].relevancy + "</td></tr>";
+                }
+            }
+
+            singleDocuEvaluateResult = singleDocuEvaluateResult.substring(0, singleDocuEvaluateResult.length-1); //去除全局变量结尾的逗号
+            singleDocuEvaluateResult += "]";
+
+            insertText += "</tbody></table><div class='col-md-12' style='margin-top: 20px'><div class='col-md-2 col-md-offset-5'>"+
+                          "<button type='button' class='btn btn-primary' onclick='exportSingleResult()'>导出结果<br/></button></div></div>";
+            document.getElementById("evaluate-content").innerHTML = insertText;
+        }
+    });
+}
+
+function bundleEvaluate(){
+    $.ajax({
+        type: "GET",
+        url: "/evaluate/bundleEvaluate",
+        data: {"evaluate-type":evaluateType, "last-upload-file-type": lastUploadFileType},
+        async: false,
+        dataType: 'json',
+        success: function (data) {
+            var dataObj = eval(data);
+            var insertText = "";
+
+            bundleDocuEvaluateResult = "["; //更改全局变量的值
+
+            if (evaluateType == "bf2l") { //事实到法条
+                insertText = "<div class='col-md-12' style='margin-top: 20px'><table class='table table-bordered'><thead><tr><th>序号</th><th>案号</th><th>案件名称</th><th>案由</th><th>承办人</th><th>没有法条的事实</th><th>备注</th></tr></thead><tbody>";
+            }
+            else if (evaluateType == "bl2f") { //法条到事实
+                insertText = "<div class='col-md-12' style='margin-top: 20px'><table class='table table-bordered'><thead><tr><th>序号</th><th>案号</th><th>案件名称</th><th>案由</th><th>承办人</th><th>没有事实的法条</th><th>备注</th></tr></thead><tbody>";
+            }
+            else if (evaluateType == "bl2j") { //法条到结论
+                insertText = "<div class='col-md-12' style='margin-top: 20px'><table class='table table-bordered'><thead><tr><th>序号</th><th>案号</th><th>案件名称</th><th>案由</th><th>承办人</th><th>没有结论的法条</th><th>备注</th></tr></thead><tbody>";
+            }
+            else if (evaluateType == "bj2l") { //结论到法条
+                insertText = "<div class='col-md-12' style='margin-top: 20px'><table class='table table-bordered'><thead><tr><th>序号</th><th>案号</th><th>案件名称</th><th>案由</th><th>承办人</th><th>没有法条的结论</th><th>备注</th></tr></thead><tbody>";
+            }
+
+            for (var i=0; i<dataObj.length; i++) {
+                bundleDocuEvaluateResult += "{'col1':'"+(i+1)+"', 'col2':'"+dataObj[i].caseId + "', 'col3':'"+dataObj[i].caseName+"', 'col4':'"+dataObj[i].caseReason+"', 'col5':'"+dataObj[i].judgeName+"', 'col6':'"+dataObj[i].noReferenceSource+"', 'col7':' '},";
+                insertText += "<tr><td>" + (i+1) + "</td><td>"+dataObj[i].caseId + "</td><td>" + dataObj[i].caseName + "</td><td>" + dataObj[i].caseReason + "</td><td>" + dataObj[i].judgeName + "</td><td>" + dataObj[i].noReferenceSource + "</td><td>" +" "+ "</td></tr>";
+            }
+
+            bundleDocuEvaluateResult = bundleDocuEvaluateResult.substring(0, bundleDocuEvaluateResult.length-1); //去除全局变量结尾的逗号
+            bundleDocuEvaluateResult += "]";
+
+            insertText += "</tbody></table><div class='col-md-12' style='margin-top: 20px'><div class='col-md-2 col-md-offset-5'>"+
+                          "<button type='button' class='btn btn-primary' onclick='exportBundleResult()'>导出结果<br/></button></div></div>";
+            document.getElementById("evaluate-content").innerHTML = insertText;
+        }
+    });
+}
+
+function exportSingleResult(){
+    $.ajax({
+        type: "POST",
+        url: "/evaluate/singleExport",
+        data: {"evaluate-type":evaluateType, "basic-info":singleDocuBasicInfo, "evaluate-result": singleDocuEvaluateResult},
+        async: false,
+        success: function (data) {
+            if(data != "fail"){
+                alert("导出结果成功！导出文件为："+data);
+            }
+            else{
+                alert("导出结果失败！")
+            }
+        }
+    });
+}
+
+function exportBundleResult(){
+    $.ajax({
+        type: "POST",
+        url: "/evaluate/bundleExport",
+        data: {"evaluate-type":evaluateType, "evaluate-result": bundleDocuEvaluateResult},
+        async: false,
+        success: function (data) {
+            if(data != "fail"){
+                alert("导出结果成功！导出文件为："+data);
+            }
+            else{
+                alert("导出结果失败！")
+            }
+        }
+    });
+}
+
+</script>
+</html>

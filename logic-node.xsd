@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.runoob.com" xmlns="http://www.runoob.com">
+	<xs:complexType mixed="true" name="node">
+		<xs:sequence>
+			<xs:element name="topic" type="xs:string" nillable="true"/>
+			<xs:element name="type" type="xs:string" nillable="true"/>
+			<xs:element name="detail" type="xs:string" nillable="true"/>
+			<xs:element name="children">
+				<xs:complexType mixed="true">
+					<xs:sequence>
+						<xs:element name="node" type="node" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="nodeId" type="xs:integer"/>
+		<xs:attribute name="x" type="xs:integer"/>
+		<xs:attribute name="y" type="xs:integer"/>
+	</xs:complexType>
+
+	<xs:element name="graph">
+		<xs:complexType mixed="true">
+			<xs:sequence>
+				<xs:element name="nodes">
+					<xs:complexType mixed="true">
+						<xs:sequence>
+							<xs:element name="node" type="node" minOccurs="0"/>
+							<xs:element name="name" type="xs:string" minOccurs="0"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

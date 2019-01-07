@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:ecm xmlns:ns2="http://www.runoob.com">
+    <evidences>
+        <evidence x="-23" y="38" type="5" trust="1" isDefendant="1">
+            <name>链体1</name>
+            <content>链体1</content>
+            <type>其他</type>
+            <committer></committer>
+            <reason></reason>
+            <trust>采信</trust>
+            <heads>
+                <head x="308" y="-7">
+                    <name>链头1</name>
+                    <content>链头1</content>
+                </head>
+                <head x="308" y="67">
+                    <name>链头3</name>
+                    <content>链头3</content>
+                </head>
+            </heads>
+        </evidence>
+    </evidences>
+    <facts>
+        <fact x="900" y="1">
+            <name>事实节点1</name>
+            <content>事实节点1</content>
+            <joints>
+                <joint x="645" y="1">
+                    <name>连接点1</name>
+                    <content>连接点1</content>
+                </joint>
+            </joints>
+        </fact>
+    </facts>
+    <relations>
+        <relation>
+            <arrows>
+                <arrow>
+                    <name>新箭头1</name>
+                    <content></content>
+                    <head x="308" y="-7">
+                        <name>链头1</name>
+                        <content>链头1</content>
+                        <bodyContent>链体1</bodyContent>
+                    </head>
+                </arrow>
+            </arrows>
+            <joint x="645" y="1">
+                <name>连接点1</name>
+                <content>连接点1</content>
+                <factContent>事实节点1</factContent>
+            </joint>
+        </relation>
+    </relations>
+</ns2:ecm>

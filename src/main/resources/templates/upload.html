@@ -1,0 +1,285 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>上传证据 | 法官工作空间</title>
+
+    <link rel="stylesheet" th:href="@{css/bootstrap.css}"/>
+    <link rel="stylesheet" th:href="@{css/style.css}"/>
+    <link rel="stylesheet" th:href="@{css/loading.css}"/>
+
+
+    <!--<link rel="stylesheet" th:href="@{css/login.css}"/>-->
+    <!--<link rel="apple-touch-icon-precomposed" th:href="@{img/icon.png}">-->
+    <!--<link rel="shortcut icon" th:href="@{img/favicon.ico}">-->
+    <script th:src="@{js/ref/jquery-2.1.4.min.js}"></script>
+    <script th:src="@{js/ref/jquerysession.js}"></script>
+    <script th:src="@{js/loading.js}"></script>
+    <script th:src="@{js/upload.js}"></script>
+    <!--[if gte IE 9]>
+    <script th:src="@{js/ref/jquery-1.11.1.min.js}"></script>
+    <script th:src="@{js/ref/html5shiv.min.js}"></script>
+    <script th:src="@{js/ref/respond.min.js}"></script>
+    <script th:src="@{js/ref/selectivizr-min.js}"></script>
+    <![endif]-->
+
+    <!--[if lt IE 9]>
+    <script>window.location.href='upgrade-browser.html';</script>
+
+    <![endif]-->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        if($.session.get('username')==null){
+            window.location.href="/login";
+        }
+        /*]]>*/
+    </script>
+    <style>
+
+        body{ background:#ffffff}
+
+        .head_chain {
+             display: inline-block;
+            border: 1px solid black;
+            margin-left: 2%;
+            padding: 3px;
+            margin-top: 1%;
+            white-space:nowrap;
+        }
+        .myRemove { color:rgba(0,0,0,0); transition:0.5s; }
+        .myRemove:hover { color:rgba(78,78,78,1); }
+        .headRemove { color:rgba(0,0,0,0); transition:0.5s; }
+        .headRemove:hover { color:rgba(78,78,78,1); }
+
+        .headList{
+            margin-top: -2%;
+        }
+
+        .addHead{
+
+            padding-left: 1%;
+
+        }
+    </style>
+</head>
+
+
+<body class="user-select">
+<section class="container-fluid">
+    <div class="row">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">切换导航</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+                    <a class="navbar-brand" href="manage.html">法官工作空间</a> </div>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <!--<li class="dropdown"> <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{user}} <span class="caret"></span></a>-->
+                        <!--<ul class="dropdown-menu dropdown-menu-left">-->
+                        <!--<li><a title="查看或修改个人信息" data-toggle="modal" data-target="#seeUserInfo">个人信息</a></li>-->
+                        <!--</ul>-->
+                        <!--</li>-->
+                        <li class="menu-label"><a id="userLabel" title="查看或修改个人信息" data-toggle="modal" data-target="#seeUserInfo">个人信息</a></li>
+                        <li><a id='exist_click'>退出登录</a></li>
+                    </ul>
+                    <form id="excelForm" action="/evidence/importExcel" method="post" enctype="multipart/form-data" class="navbar-form navbar-right" role="">
+                        <div class="input-group">
+                            <input type="text" name="ajxh" id="importCaseId" class="hidden form-control" value="41722">
+                            <input type="file" name="file" class="form-control">
+                            <span class="input-group-btn">
+                            <button class="btn btn-default" onclick="uploadExcel()">提交</button>
+                            </span> </div>
+                    </form>
+                </div>
+            </div>
+            <ol class="breadcrumb" style="font-size: 19px">
+                <li><strong>
+                    <a class="active" href="/upload">质证与采信</a></strong>
+                </li>
+                <li>
+                    <a href="/model">证据链建模</a>
+                </li>
+                <li >
+                    <a href="/logic-new">说理逻辑</a>
+                </li>
+                <li >
+                    <a href="text.html">说理语段</a>
+                </li>
+
+            </ol>
+
+
+
+        </nav>
+    </div>
+
+
+    <div class="row" style="background: white;padding-top: 7% ;padding-left: 2%">
+<br>
+        <div class="row" style="font-size: 16px;">
+            <div>案号：<span id="caseNum"></span>, 案由：<span id="caseBrief"></span></div>
+            <div>案件名称：<span id="caseName"></span></div>
+            <div>承办人：<span id="underTaker">XXX</span>，立案日期：<span id="caseDate">XXXX年XX月XX日</span></div>
+        </div>
+        <br>
+        <div class="col-md-6 pull-left" > <h4 >原告证据 <a id="list_hide" style="font-size: 12px;" href="#">隐藏<<</a> </h4></div>
+        <div class="col-md-5"  > <h4 class="pull-right">被告证据 <a id="graph_hide" style="font-size: 12px;" href="#">隐藏<<</a> </h4></div>
+        <br>
+
+
+    </div>
+
+    <div style="display: inline-block;width:45%;min-height: 300px;vertical-align: top;margin-top:15px;margin-left: 2%" id="list_div">
+
+
+
+
+        <div class="text-center m-t-md">
+
+            <textarea id="mystr1" class="form-control" rows="5"></textarea>
+            <br>
+            <!--<button  class="col-md-2 btn-success btn-sm btn pull-right" onclick="myHead()">提取链头</button>-->
+
+            <!--<button  class="col-md-2 btn-success btn-sm btn pull-right" onclick="mySplit()" >分解证据</button> <span></span>-->
+
+            <div class="btn-toolbar operation" role="toolbar">
+                <div class="btn-group" role="group">
+                    <a class="btn btn-default" onClick="mySplit(1)">分解证据</a>
+                    <a class="btn btn-default" onClick="myHead(1)">提取链头</a>
+                </div>
+                <div class="btn-group" role="group">
+                    <button type="submit" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="重置" name="checkbox_delete" onclick="myAdd(1)">新增</button>
+                </div>
+                <div class="btn-group" role="group">
+                    <button type="submit" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="重置" name="checkbox_delete" onclick="myDelete(1)">清空</button>
+                </div>
+            </div>
+
+            <div id="after1">
+                <br>
+                <br>
+                <br>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div style="display: inline-block;width:45%;min-height: 300px;vertical-align: top;margin-top:15px;margin-left: 2%" id="graph_div">
+
+        <div class="text-center m-t-md">
+
+            <textarea id="mystr2" class="form-control" rows="5"></textarea>
+            <br>
+            <!--<button  class="col-md-2 btn-success btn-sm btn pull-right" onclick="myHead()">提取链头</button>-->
+
+            <!--<button  class="col-md-2 btn-success btn-sm btn pull-right" onclick="mySplit()" >分解证据</button> <span></span>-->
+
+            <div class="btn-toolbar operation" role="toolbar">
+                <div class="btn-group" role="group">
+                    <a class="btn btn-default" onClick="mySplit(2)">分解证据</a>
+                    <a class="btn btn-default" onClick="myHead(2)">提取链头</a>
+                </div>
+                <div class="btn-group" role="group">
+                    <button type="submit" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="重置" name="checkbox_delete" onclick="myAdd(2)">新增</button>
+                </div>
+                <div class="btn-group" role="group">
+                    <button type="submit" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="重置" name="checkbox_delete" onclick="myDelete(2)">清空</button>
+                </div>
+
+            </div>
+
+            <div id="after2">
+                <br>
+                <br>
+                <br>
+            </div>
+        </div>
+
+    </div>
+
+
+
+</section>
+<!--个人信息模态框-->
+<div class="modal fade" id="seeUserInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <form action="" method="post">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" >个人信息</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table" style="margin-bottom:0px;">
+                        <thead>
+                        <tr> </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td wdith="20%">姓名:</td>
+                            <td width="80%"><input type="text" value="王雨" class="form-control" name="truename" maxlength="10" autocomplete="off" /></td>
+                        </tr>
+                        <tr>
+                            <td wdith="20%">用户名:</td>
+                            <td width="80%"><input type="text" value="admin" class="form-control" name="username" maxlength="10" autocomplete="off" /></td>
+                        </tr>
+                        <tr>
+                            <td wdith="20%">电话:</td>
+                            <td width="80%"><input type="text" value="18538078281" class="form-control" name="usertel" maxlength="13" autocomplete="off" /></td>
+                        </tr>
+                        <tr>
+                            <td wdith="20%">旧密码:</td>
+                            <td width="80%"><input type="password" class="form-control" name="old_password" maxlength="18" autocomplete="off" /></td>
+                        </tr>
+                        <tr>
+                            <td wdith="20%">新密码:</td>
+                            <td width="80%"><input type="password" class="form-control" name="password" maxlength="18" autocomplete="off" /></td>
+                        </tr>
+                        <tr>
+                            <td wdith="20%">确认密码:</td>
+                            <td width="80%"><input type="password" class="form-control" name="new_password" maxlength="18" autocomplete="off" /></td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr></tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!--提示模态框-->
+<div class="modal fade user-select" id="areDeveloping" tabindex="-1" role="dialog" aria-labelledby="areDevelopingModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="areDevelopingModalLabel" style="cursor:default;">该功能正在日以继夜的开发中…</h4>
+            </div>
+            <div class="modal-body"> <img src="public/img/baoman/baoman_01.gif" alt="深思熟虑" />
+                <p style="padding:15px 15px 15px 100px; position:absolute; top:15px; cursor:default;">很抱歉，程序猿正在日以继夜的开发此功能，本程序将会在以后的版本中持续完善！</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">朕已阅</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+</body>
+</html>

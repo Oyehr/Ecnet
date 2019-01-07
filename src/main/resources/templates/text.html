@@ -1,0 +1,413 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>上传证据 | 法官工作空间</title>
+
+
+    <link rel="stylesheet" th:href="@{css/bootstrap.css}"/>
+    <link rel="stylesheet" th:href="@{css/font-awesome.css}"/>
+    <link rel="stylesheet" th:href="@{css/style.css}"/>
+    <link rel="stylesheet" th:href="@{css/custom.css}"/>
+    <link rel="apple-touch-icon-precomposed" th:href="@{img/icon.png}">
+    <link rel="shortcut icon" th:href="@{img/favicon.ico}">
+    <script th:src="@{js/ref/jquery-2.1.4.min.js}"></script>
+    <script th:src="@{js/ref/jquerysession.js}"></script>
+
+
+    <![endif]-->
+    <!--[if lt IE 9]>
+    <script>window.location.href='upgrade-browser.html';</script>
+    <![endif]-->
+    <style>
+        body{ background:#ffffff}
+    </style>
+</head>
+
+<body class="user-select">
+<section class="container-fluid">
+    <div class="row">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">切换导航</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+                    <a class="navbar-brand" href="/">法官工作空间</a> </div>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown"> <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">林世开<span class="caret"></span></a>
+                            <ul class="dropdown-menu dropdown-menu-left">
+                                <li><a title="查看或修改个人信息" data-toggle="modal" data-target="#seeUserInfo">个人信息</a></li>
+                            </ul>
+                        </li>
+                        <li><a id='exist_click'>退出登录</a></li>
+                    </ul>
+                    <form action="" method="post" class="navbar-form navbar-right" role="search">
+                        <div class="input-group">
+                            <input type="text" class="form-control" autocomplete="off" placeholder="键入关键字搜索" maxlength="15">
+                            <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">搜索</button>
+                            </span> </div>
+                    </form>
+                </div>
+            </div>
+            <ol class="breadcrumb" style="font-size: 19px">
+                <li>
+                    <a href="/upload">质证与采信</a>
+                </li>
+                <li>
+                    <a href="/model">证据链建模</a>
+                </li>
+                <li>
+                <a class="active" href="#">说理逻辑</a>
+                </li>
+                <li>    <strong>
+                    <a href="/text">说理语段</a></strong>
+                </li>
+
+            </ol>
+        </nav>
+    </div>
+
+
+    <div class="row" style="padding-top: 7% ;padding-left: 2%;padding-right: 3%">
+
+
+
+
+    </div>
+
+<br>
+
+    <div class="row" style="padding-left:2% ">
+        <div class="col-md-11">
+            <h2 class="text-center" style="color:black">事实段</h2>
+            <br>
+            <div class="text-center m-t-md">
+
+                <!--<textarea id="mystr" class="form-control" rows="5"></textarea>-->
+                <p style="color: black" class="pull-left">
+                    湖南省怀化市鹤城区人民检察院指控：2015年3月10日19时58分许，被告人罗某甲驾驶湘N×××××小型面包车在怀化市鹤城区迎丰路由东往西行驶，当该车行驶至迎丰东路市四中门口路段时因未注意避让行人，将横穿马路的被害人彭某乙撞倒后驾车逃逸。当日20时01分许，被告人胡某甲驾驶湘N×××××小型出租车从鹤城区迎丰路由东往西行驶路过该路段时，因超速行驶将上述交通事故受伤倒地的被害人彭某乙再次碾压，造成被害人彭某乙当场死亡的重大交通事故。经公安交警部门认定，被告人罗某甲、胡某甲负此次事故的主要责任，被害人彭某乙负此次事故的次要责任。
+                    案发后，被告人胡某甲在事故现场等待交警部门处理。后二被告人共同赔偿了被害人近亲属各项损失费63.5万元，取得被害人近亲属的谅解。
+                    该院以被告人罗某甲、胡某甲的行为构成交通肇事罪，负事故主要责任，且被告人罗某甲在肇事后逃逸，请求本院依照《中华人民共和国刑法》第一百三十三条之规定判处。并向本院提供了相关的证据。
+                    被告人罗某甲、胡某甲对公诉机关指控其交通肇事的事实供认属实。
+                    经审理查明：2015年3月10日19时58分许，被告人罗某甲驾驶湘N×××××小型面包车在怀化市鹤城区迎丰路由东往西行驶，当该车行驶至迎丰东路市四中门口路段时因未注意避让行人，将横穿马路的被害人彭某乙撞倒后驾车逃逸。当日20时01分许，被告人胡某甲驾驶湘N×××××小型出租车从鹤城区迎丰路由东往西行驶路过该路段时，因超速行驶将上述交通事故受伤倒地的被害人彭某乙再次碾压，造成被害人彭某乙当场死亡的重大交通事故。经公安交警部门认定，被告人罗某甲、胡某甲负此次事故的主要责任，被害人彭某乙负此次事故的次要责任。
+                    案发后，被告人胡某甲在事故现场等待交警部门处理。后二被告人及湘N×××××小型面包车车主、湘N×××××小型出租车车主共同赔偿了被害人近亲属各项损失费63.5万元，取得被害人近亲属的谅解。
+                </p>
+                <br>
+                <!--<button  class="col-md-2 btn-success btn-sm btn pull-right" onclick="myHead()">提取链头</button>-->
+
+                <!--<button  class="col-md-2 btn-success btn-sm btn pull-right" onclick="mySplit()" >分解证据</button> <span></span>-->
+
+                <div class="btn-toolbar operation pull-right" role="toolbar">
+                    <!--<div class="btn-group" role="group">-->
+                    <!--<a class="btn btn-default" onClick="mySplit()">分解证据</a>-->
+                    <!--<a class="btn btn-default" onClick="myHead()">提取链头</a>-->
+                    <!--</div>-->
+                    <div class="btn-group" role="group">
+                        <button type="submit" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" name="checkbox_delete" onclick="myDelete()">编辑</button>
+                        <button type="submit" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" name="checkbox_delete" onclick="myDelete()">导出</button>
+
+                    </div>
+                </div>
+
+                <div id="after">
+
+
+                    <br>
+
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <hr>
+
+    <div class="row" style="padding-left:2% ">
+        <div class="col-md-11">
+            <h2 class="text-center" style="color:black">证据段</h2>
+            <br>
+            <div class="text-center m-t-md">
+
+                <!--<textarea id="mystr" class="form-control" rows="5"></textarea>-->
+                <p style="color: black" class="pull-left">
+                    上述事实，有公诉机关及被告人提供，并经法庭质证、认证的下列证据予以证明：
+                    （1）户籍证明，证明被告人罗某甲、胡某甲及被害人彭某乙的身份情况。
+                    （2）公安机关出具的到案经过，证明抓获被告人罗某甲的事实经过以及被告人胡某甲案发后在现场等候交警部门处理情况。
+                    （3）机动车驾驶证信息，证明被告人罗某甲、胡某甲办理了机动车驾驶证。机动车登记信息及行驶证（复印件），证明肇事车辆湘N×××××小型面包车所有人系包太全、肇事车辆湘N×××××小型出租车所有人系陈高兵。
+                    （4）怀化市公安局交通警察支队事故处理大队公安交通管理行政强制措施凭证，证明怀化市公安局交通警察支队事故处理大队对被告人罗某甲、胡某甲所驾驶的肇事车辆依法予以扣留的情况。
+                    （5）交通事故赔偿协议书、协议书、谅解书、收条，证明被告人罗某甲、湘N×××××小型面包车车主包太全、被告人胡某甲、湘N×××××小型出租车车主陈高兵等人与被害人近亲属已达成了赔偿协议，赔偿被害人近亲属经济损失共计63．5万元，取得了被害人近亲属谅解的情况。
+                    （6）证人胡某乙的证言，证明2015年3月10日20时许，其开车至怀化市鹤城区皇廷大酒店门前路段时，突然发现车前方一辆银灰色面包车将一位行人撞倒在靠近中心隔离墩右边第一根车道上，其立刻将车停下，发现肇事面包车将行人撞倒后继续往前行驶了6-7米远的距离踩了一脚刹车，但是车子没有停，而是加大油门飞快往前方驶去逃离了案发现场，于是其打了右转向灯避开行人后也走了。并证明行人是被面包车的左前方车头撞倒的，行人被撞后意识还比较清醒，双手还可以活动，但不能站起来。
+                    证人李某的证言，证明2015年3月10日19时50分许，其与丈夫从怀化市鹤城区盛世佳园往老市公安局方向散步，其二人走到怀化市四中大门口路段时，就发现一个老人半躺在马路中间，老人前方大约17米左右有一辆银灰色五菱面包车，面包车驾驶员好像知道发生了交通事故，但是没有停车，继续开车往市委方向走了，于是其丈夫拦下一辆私家车去追逃跑的面包车。当时行人意识比较清醒，还知道呼叫驾驶员停车。后老人被一辆黄色出租车撞击，拖离原案发地30米左右，被车辆压在车底下，后被人拖出车底。
+                    证人罗某乙的证言，证明2015年3月10日19时30分许，其和罗群在罗某甲家吃完饭，罗某甲说开车送其与罗群去河西，于是其和罗群坐上罗某甲驾驶的车牌为湘N×××××号面包车，当时其坐在副驾驶上一直玩手机，在回河西的路上罗某甲说要回乡下去接他亲戚，正好其也要回去带点腊肉上来，于是罗某甲就驾车去了辰溪县长田湾，快到家的时候罗某甲发现面包车左边的反光镜坏了，其没问什么情况。第二天早上8、9点钟，罗某甲给其打电话说交警队的民警要他把车开到交警队去看一下，其就要罗某甲开过去看看。
+                    证人彭某甲的证言，证明被害人彭某乙系其父亲，发生交通事故后，肇事司机等人已赔偿其和母亲经济损失63.5万元，并已取得其和母亲谅解的有关情况。
+                    （7）被告人罗某甲的供述，证明2015年3月10日20时许，其驾驶湘N×××××的小型面包车从鹤城区三眼桥小当家幼儿园旁的一楼出租房送罗某乙和罗群去河西建材市场，途径鹤城区迎丰路第四中学门口路段时，车子撞到了一名横过马路的行人，当时其发现了，车上的罗某乙就叫其开车快走，其心里害怕，没有停车继续往前面开走了。第二天其开车到怀化市市委门口，就被执勤的公安民警抓获了。
+                    被告人胡某甲的供述，证明2015年3月10日20时许，其驾驶一辆牌照为湘N×××××号黄色出租车搭乘一名乘客从城东市场往太平桥走，当时车速大概每小时50公里，途径鹤城区四中门前路段时，突然车正前方保险杆不知道撞到什么东西，直到行驶至鹤城区皇延大酒店门前路段时气囊爆了，其便下车走到车子右边看见地上有血，便蹲下来看，发现一个约40岁左右的男子睡在其车前面，才知道自己撞到行人了，当时其直行在隔离墩右边的第二根车道，于是其马上报警和喊救护车。并证明其在怀化市汽驾二校上班，此次出行是帮亲戚谭再发代班开的士车。
+                    （8）怀化市方正司法鉴定中心司法鉴定意见，证明被害人彭某乙系交通事故中车辆碰撞致颅脑损伤，颅内出血及胸腔脏器损伤导致呼吸循环衰竭而死亡。其骨骨折，颅脑损伤，颅内出血，颈椎骨折脱位，颈髓损伤死亡。右面部、右颈肩部及右胸腹外侧损伤系车辆碾压，挤压所形成。
+                    湖南明鉴司法鉴定所交通事故车辆技术状况检验意见，证明湘N×××××长安牌小型轿车，经检验该车符合《机动车运行安全技术条件（GB7258-2012）。湘N×××××五菱牌小型面包车，经检验该车照明、信号装置不符合《机动车运行安全技术条件（GB7258-2012）。
+                    湖南明鉴司法鉴定所交通事故车辆痕迹鉴定意见，证明湘N×××××长安牌小型轿车的车体痕迹、系该车正面碰撞可塑性物体（人体）所形成，在高度、位置、形态及受力方向上具有一一对应的痕迹对特征。
+                    湖南明鉴司法鉴定所交通事故车辆行驶速度检验意见，证明经检验，湘N×××××长安牌小型轿车的行驶速度约为62.95km／h。
+                    湖南明鉴司法鉴定所交通事故交通事故现场散落物比对分析鉴定意见，证明经检验，2015年3月10日发生在怀化市四中学校门前路段的交通事故现场遗留车辆散落物（左侧后视镜）与湘N×××××五菱牌小型面包车缺失的左侧后视镜相吻合。
+                    怀化市方正司法鉴定中心司法鉴定意见，证明送检的被告人胡某甲血样中检出乙醇成分，含量为5.4mg／100ml。
+                    （9）怀化市公安局交通警察支队事故处理大队道路交通事故认定书，证明被告人罗某甲、胡某甲承担事故的主要责任；被害人彭某乙承担事故的次要责任。
+                    （10）道路交通事故现场勘查笔录、交通事故情况记录、交通事故现场图及照片，证明案发现场位置、概貌。交通事故现场草图及照片经被告人罗某甲、胡某甲辨认属实。
+                </p>
+                <br>
+                <!--<button  class="col-md-2 btn-success btn-sm btn pull-right" onclick="myHead()">提取链头</button>-->
+
+                <!--<button  class="col-md-2 btn-success btn-sm btn pull-right" onclick="mySplit()" >分解证据</button> <span></span>-->
+
+                <div class="btn-toolbar operation pull-right" role="toolbar">
+                    <!--<div class="btn-group" role="group">-->
+                    <!--<a class="btn btn-default" onClick="mySplit()">分解证据</a>-->
+                    <!--<a class="btn btn-default" onClick="myHead()">提取链头</a>-->
+                    <!--</div>-->
+                    <div class="btn-group" role="group">
+                        <button type="submit" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" name="checkbox_delete" onclick="myDelete()">编辑</button>
+                        <button type="submit" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" name="checkbox_delete" onclick="myDelete()">导出</button>
+
+                    </div>
+                </div>
+
+                <div id="after">
+
+
+                    <br>
+
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <hr>
+
+    <div class="row" style="padding-left:2% ">
+        <div class="col-md-11">
+            <h2 class="text-center" style="color:black">裁判文书</h2>
+            <br>
+            <div class="text-center m-t-md">
+
+                <!--<textarea id="mystr" class="form-control" rows="5"></textarea>-->
+                <p style="color: black" class="pull-left">
+                    本院认为：被告人罗某甲、胡某甲违反道路交通安全法规，以致发生致一人死亡的重大交通事故，且负事故主要责任；被告人罗某甲在肇事后逃逸，二被告人的行为均已构成交通肇事罪。公诉机关指控被告人罗某甲、胡某甲交通肇事罪罪名成立。案发后，被告人胡某甲留在现场等候交警部门处理，并如实供述其犯罪事实，具有自首情节，可以从轻处罚。被告人罗某甲、胡某甲积极赔偿了被害人近亲属的经济损失，取得了被害人近亲属的谅解，且案发后认罪态度较好，确有悔罪表现。结合社区矫正机构所作建议对被告人罗某甲、胡某甲实行社区矫正意见，对被告人罗某甲、胡某甲可以适用缓刑。
+                    综上所述，本案事实清楚，证据确实充分。本院依照《中华人民共和国刑法》第一百三十三条、第六十七条第一、三款、第七十二条、第七十三条第二、三款、第七十六条之规定，判决如下：
+                    判决结果
+                    一、被告人罗某甲犯交通肇事罪，判处有期徒刑三年，缓刑三年；
+                    （缓刑考验期限从判决确定之日起计算。自裁判文书生效之日起十日内，被告人罗某甲持刑事判决书到居住地司法所报到，接受社区矫正。）
+                    二、被告人胡某甲犯交通肇事罪，判处有期徒刑一年，缓刑一年。
+                    （缓刑考验期限从判决确定之日起计算。自裁判文书生效之日起十日内，被告人胡某甲持刑事判决书到居住地司法所报到，接受社区矫正。）
+                    如不服本判决，可在接到判决书的第二日起十日内，通过本院或者直接向湖南省怀化市中级人民法院提出上诉。书面上诉的，应当提交上诉状正本一份，副本六份。
+
+
+                </p>
+                <br>
+                <!--<button  class="col-md-2 btn-success btn-sm btn pull-right" onclick="myHead()">提取链头</button>-->
+
+                <!--<button  class="col-md-2 btn-success btn-sm btn pull-right" onclick="mySplit()" >分解证据</button> <span></span>-->
+
+                <div class="btn-toolbar operation pull-right" role="toolbar">
+                    <!--<div class="btn-group" role="group">-->
+                    <!--<a class="btn btn-default" onClick="mySplit()">分解证据</a>-->
+                    <!--<a class="btn btn-default" onClick="myHead()">提取链头</a>-->
+                    <!--</div>-->
+                    <div class="btn-group" role="group">
+                        <button type="submit" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" name="checkbox_delete" onclick="myDelete()">编辑</button>
+                        <button type="submit" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" name="checkbox_delete" onclick="myDelete()">导出</button>
+
+                    </div>
+                </div>
+
+                <div id="after">
+
+
+                    <br>
+
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+<!--个人信息模态框-->
+<div class="modal fade" id="seeUserInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <form action="" method="post">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" >个人信息</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table" style="margin-bottom:0px;">
+                        <thead>
+                        <tr> </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td wdith="20%">姓名:</td>
+                            <td width="80%"><input type="text" value="王雨" class="form-control" name="truename" maxlength="10" autocomplete="off" /></td>
+                        </tr>
+                        <tr>
+                            <td wdith="20%">用户名:</td>
+                            <td width="80%"><input type="text" value="admin" class="form-control" name="username" maxlength="10" autocomplete="off" /></td>
+                        </tr>
+                        <tr>
+                            <td wdith="20%">电话:</td>
+                            <td width="80%"><input type="text" value="18538078281" class="form-control" name="usertel" maxlength="13" autocomplete="off" /></td>
+                        </tr>
+                        <tr>
+                            <td wdith="20%">旧密码:</td>
+                            <td width="80%"><input type="password" class="form-control" name="old_password" maxlength="18" autocomplete="off" /></td>
+                        </tr>
+                        <tr>
+                            <td wdith="20%">新密码:</td>
+                            <td width="80%"><input type="password" class="form-control" name="password" maxlength="18" autocomplete="off" /></td>
+                        </tr>
+                        <tr>
+                            <td wdith="20%">确认密码:</td>
+                            <td width="80%"><input type="password" class="form-control" name="new_password" maxlength="18" autocomplete="off" /></td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr></tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!--提示模态框-->
+<div class="modal fade user-select" id="areDeveloping" tabindex="-1" role="dialog" aria-labelledby="areDevelopingModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="areDevelopingModalLabel" style="cursor:default;">该功能正在日以继夜的开发中…</h4>
+            </div>
+            <div class="modal-body"> <img src="public/img/baoman/baoman_01.gif" alt="深思熟虑" />
+                <p style="padding:15px 15px 15px 100px; position:absolute; top:15px; cursor:default;">很抱歉，程序猿正在日以继夜的开发此功能，本程序将会在以后的版本中持续完善！</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">朕已阅</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="public/js/bootstrap.min.js"></script>
+<script src="public/js/admin-scripts.js"></script>
+<script>
+    //是否确认删除
+    var dat_restore = []
+    var dat_type = ''
+    var dat_page = {
+        'finished':1,
+        'processing':1,
+        'raw':1,
+        'all':1
+    }
+    const num_p_page = 10
+    $(function(){
+        $("#main table tbody tr td a").click(function(){
+            var name = $(this);
+            var id = name.attr("rel"); //对应id
+            if (event.srcElement.outerText == "删除")
+            {
+                if(window.confirm("此操作不可逆，是否确认？"))
+                {
+                    $.ajax({
+                        type: "POST",
+                        url: "/Article/delete",
+                        data: "id=" + id,
+                        cache: false, //不缓存此页面
+                        success: function (data) {
+                            window.location.reload();
+                        }
+                    });
+                };
+            };
+        });
+        $('#finished-tag').click(function () {
+            $(".type_switch").removeClass('active')
+            $("#finish_li").addClass('active')
+            getCase('finished',dat_page['finished'])
+
+        })
+        $('#all-tag').click(function () {
+            $(".type_switch").removeClass('active')
+            $("#all_li").addClass('active')
+            getCase('all',dat_page['all'])
+
+        })
+        $('#processing-tag').click(function () {
+            $(".type_switch").removeClass('active')
+            $("#processing_li").addClass('active')
+            getCase('processing',dat_page['processing'])
+        })
+        $('#raw-tag').click(function () {
+            $(".type_switch").removeClass('active')
+            $("#raw_li").addClass('active')
+            getCase('raw',dat_page['raw'])
+        })
+        $('#exist_click').click(function () {
+            if(confirm('是否确认退出？'))
+            {
+                $.ajax({
+                    url:'/logout',
+                    type:'GET',
+                    success:function () {
+                        window.location.href = '/login'
+                    }
+                })
+            }
+        })
+
+
+        function getCase(type,page) {
+            if(dat_type == type)
+            {
+                refresh_table(page)
+            }else {
+                $.ajax({
+                    url:'/case/'+type,
+                    type:'POST',
+                    success:function (data) {
+                        dat_restore = data
+                        dat_type = type
+                        refresh_table(page)
+                    }
+                })
+            }
+        }
+        getCase('raw',1)
+        $('#raw_li').addClass('active')
+    });
+</script>
+
+
+<script>
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

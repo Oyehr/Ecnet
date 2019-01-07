@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>上传证据 | 法官工作空间</title>
+    <link rel="stylesheet" type="text/css" href="public/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="public/css/style.css">
+    <link rel="stylesheet" type="text/css" href="public/css/font-awesome.min.css">
+    <link rel="apple-touch-icon-precomposed" href="public/img/icon/icon.png">
+    <link rel="shortcut icon" href="public/img/favicon.ico">
+    <script src="public/js/jquery-2.1.4.min.js"></script>
+    <script src="public/js/manage.js"></script>
+    <!--[if gte IE 9]>
+    <script src="js/jquery-1.11.1.min.js" type="text/javascript"></script>
+    <script src="js/html5shiv.min.js" type="text/javascript"></script>
+    <script src="js/respond.min.js" type="text/javascript"></script>
+    <script src="js/selectivizr-min.js" type="text/javascript"></script>
+
+    <![endif]-->
+    <!--[if lt IE 9]>
+    <script>window.location.href='upgrade-browser.html';</script>
+    <![endif]-->
+</head>
+
+<body class="user-select">
+<section class="container-fluid">
+    <div class="row">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">切换导航</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+                    <a class="navbar-brand" href="/">法官工作空间</a> </div>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown"> <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{user}} <span class="caret"></span></a>
+                            <ul class="dropdown-menu dropdown-menu-left">
+                                <li><a title="查看或修改个人信息" data-toggle="modal" data-target="#seeUserInfo">个人信息</a></li>
+                            </ul>
+                        </li>
+                        <li><a id='exist_click'>退出登录</a></li>
+                    </ul>
+                    <form action="" method="post" class="navbar-form navbar-right" role="search">
+                        <div class="input-group">
+                            <input type="text" class="form-control" autocomplete="off" placeholder="键入关键字搜索" maxlength="15">
+                            <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">搜索</button>
+                            </span> </div>
+                    </form>
+                </div>
+            </div>
+            <ol class="breadcrumb" style="font-size: 19px">
+                <li>              <a class="active" href="upload.html">质证与采证</a>
+                </li>
+                <li>
+                    <a href="picture.html">证据链建模</a>
+                </li>
+                <li >
+                    <strong>  <a href="law.html">说理与法条推荐</a></strong>
+                </li>
+                <li >
+                    <a href="text.html">文书展示</a>
+                </li>
+
+            </ol>
+        </nav>
+    </div>
+
+
+    <div class="row" style="background: white;padding-top: 7% ;padding-left: 2%">
+
+
+        <div class="col-md-4">
+            <h4 style="color:black">证据列表</h4>
+            <br>
+            <div class="text-center m-t-md">
+                <div class="list-group">
+                    <a href="#" class="list-group-item active">
+                        <h4 class="list-group-item-heading">
+                            采信证据
+                        </h4>
+                    </a>
+                    <a href="#" class="list-group-item">
+                        <span class="badge" data-toggle="modal" data-target="#seeLaw">+</span>
+                        <p class="list-group-item-text">
+                            已采信证据1
+                        </p>
+                    </a>
+                    <a href="#" class="list-group-item">
+                        <span class="badge" data-toggle="modal" data-target="#seeLaw"> +</span>
+                        <p class="list-group-item-text">
+                            已采信证据2
+                        </p>
+                    </a>
+                </div>
+                <div class="list-group">
+                    <a href="#" class="list-group-item active">
+                        <h4 class="list-group-item-heading">
+                            未采信证据
+                        </h4>
+                    </a>
+                    <a href="#" class="list-group-item">
+                        <span class="badge" data-toggle="modal" data-target="#seeLaw">+</span>
+                        <p class="list-group-item-text">
+                            未采信证据1
+                        </p>
+                    </a>
+                    <a href="#" class="list-group-item">
+                        <span class="badge" data-toggle="modal" data-target="#seeLaw">+</span>
+                        <p class="list-group-item-text">
+                            未采信证据2
+                        </p>
+                    </a>
+                </div>
+
+
+
+            </div>
+
+            <h4 style="color:black">事实列表</h4>
+            <br>
+            <div class="text-center m-t-md">
+                <div class="list-group">
+
+                    <a href="#" class="list-group-item">
+                        <span class="badge" data-toggle="modal" data-target="#seeLaw">+</span>
+                        <p class="list-group-item-text">
+                            事实1
+                        </p>
+                    </a>
+                    <a href="#" class="list-group-item">
+                        <span class="badge" data-toggle="modal" data-target="#seeLaw"> +</span>
+                        <p class="list-group-item-text">
+                            事实2
+                        </p>
+                    </a>
+                </div>
+
+        </div>
+
+
+    </div>
+</section>
+<!--个人信息模态框-->
+<div class="modal fade" id="seeUserInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <form action="" method="post">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" >个人信息</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table" style="margin-bottom:0px;">
+                        <thead>
+                        <tr> </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td wdith="20%">姓名:</td>
+                            <td width="80%"><input type="text" value="王雨" class="form-control" name="truename" maxlength="10" autocomplete="off" /></td>
+                        </tr>
+                        <tr>
+                            <td wdith="20%">用户名:</td>
+                            <td width="80%"><input type="text" value="admin" class="form-control" name="username" maxlength="10" autocomplete="off" /></td>
+                        </tr>
+                        <tr>
+                            <td wdith="20%">电话:</td>
+                            <td width="80%"><input type="text" value="18538078281" class="form-control" name="usertel" maxlength="13" autocomplete="off" /></td>
+                        </tr>
+                        <tr>
+                            <td wdith="20%">旧密码:</td>
+                            <td width="80%"><input type="password" class="form-control" name="old_password" maxlength="18" autocomplete="off" /></td>
+                        </tr>
+                        <tr>
+                            <td wdith="20%">新密码:</td>
+                            <td width="80%"><input type="password" class="form-control" name="password" maxlength="18" autocomplete="off" /></td>
+                        </tr>
+                        <tr>
+                            <td wdith="20%">确认密码:</td>
+                            <td width="80%"><input type="password" class="form-control" name="new_password" maxlength="18" autocomplete="off" /></td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr></tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<--!tuijian模态框-->
+<div class="modal fade" id="seeLaw" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <form action="" method="post">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" >法条推荐</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-5" style="color:black">
+                        <h5 >推荐列表</h5>
+                        <br>
+                        <ul>
+                            <li>法条1 </li>
+                            <li>法条2</li>
+                            <li>法条3</li>
+                            <li>法条4</li>
+                        </ul>
+
+                    </div>
+
+<div class="col-md-7">
+    <a >法条查询</a>
+<br>
+<p style="color: black">连接法条数据库展示树状查询结构</p>
+</div>
+
+                </div>
+                <div class="text-center" style="padding-top:20% ;padding-bottom: 3%">
+
+                    <button class="btn btn-primary">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!--提示模态框-->
+<div class="modal fade user-select" id="areDeveloping" tabindex="-1" role="dialog" aria-labelledby="areDevelopingModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="areDevelopingModalLabel" style="cursor:default;">该功能正在日以继夜的开发中…</h4>
+            </div>
+            <div class="modal-body"> <img src="public/img/baoman/baoman_01.gif" alt="深思熟虑" />
+                <p style="padding:15px 15px 15px 100px; position:absolute; top:15px; cursor:default;">很抱歉，程序猿正在日以继夜的开发此功能，本程序将会在以后的版本中持续完善！</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">朕已阅</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="public/js/bootstrap.min.js"></script>
+<script src="public/js/admin-scripts.js"></script>
+<script>
+    //是否确认删除
+    var dat_restore = []
+    var dat_type = ''
+    var dat_page = {
+        'finished':1,
+        'processing':1,
+        'raw':1,
+        'all':1
+    }
+    const num_p_page = 10
+    $(function(){
+        $("#main table tbody tr td a").click(function(){
+            var name = $(this);
+            var id = name.attr("rel"); //对应id
+            if (event.srcElement.outerText == "删除")
+            {
+                if(window.confirm("此操作不可逆，是否确认？"))
+                {
+                    $.ajax({
+                        type: "POST",
+                        url: "/Article/delete",
+                        data: "id=" + id,
+                        cache: false, //不缓存此页面
+                        success: function (data) {
+                            window.location.reload();
+                        }
+                    });
+                };
+            };
+        });
+        $('#finished-tag').click(function () {
+            $(".type_switch").removeClass('active')
+            $("#finish_li").addClass('active')
+            getCase('finished',dat_page['finished'])
+
+        })
+        $('#all-tag').click(function () {
+            $(".type_switch").removeClass('active')
+            $("#all_li").addClass('active')
+            getCase('all',dat_page['all'])
+
+        })
+        $('#processing-tag').click(function () {
+            $(".type_switch").removeClass('active')
+            $("#processing_li").addClass('active')
+            getCase('processing',dat_page['processing'])
+        })
+        $('#raw-tag').click(function () {
+            $(".type_switch").removeClass('active')
+            $("#raw_li").addClass('active')
+            getCase('raw',dat_page['raw'])
+        })
+        $('#exist_click').click(function () {
+            if(confirm('是否确认退出？'))
+            {
+                $.ajax({
+                    url:'/logout',
+                    type:'GET',
+                    success:function () {
+                        window.location.href = '/login'
+                    }
+                })
+            }
+        })
+
+        function refresh_table (page) {
+            let tr_html = ''
+            const case_num = dat_restore.length
+            let count = num_p_page
+
+            let data_page = dat_restore.slice(num_p_page*(page-1),num_p_page*page)
+
+            for (let item in data_page){
+                let html = ` <tr>
+                                <td>${data_page[item].id}</td>
+                                <td>${data_page[item].caseId}</td>
+                                <td class="article-title">${data_page[item].caseTitle}</td>
+                                <td>${data_page[item].caseDate.split(' ')[0]}</td>
+                                <td>${data_page[item].manageJudge}</td>
+                                <td>
+                                        <a href="/index.html?${data_page[item].id}" id="ecm${data_page[item].id}"  class="ecm_link" style="margin-right: 10px"> <i class="fa fa-link"></i>证据链   </a>
+                                        <a href="/logic.html?${data_page[item].id}"  id="logic${data_page[item].id}" class="logic_link" style="margin-right: 10px"> <i class="fa fa-code-fork"></i>文书说理   </a>
+                                        <a id="${data_page[item].id}" style="margin-right: 10px"> <i class="fa fa-indent"></i>说理语段   </a>
+                                </td>
+                            </tr>`
+                tr_html = tr_html + html
+                if (count == 0)
+                    break;
+                count = count-1
+
+            }
+
+            $('#caseTable').html(tr_html)
+
+            let page_label_Html = '<li class="active"><a aria-label="Previous"> <span aria-hidden="true" id = "pre_page">&laquo;</span> </a> </li>\n'
+            let page_num = Math.floor(case_num/num_p_page)+1
+            if (page_num<5){
+                for (let i =1;i<=page_num;i++){
+                    if (i == page){
+                        page_label_Html += `<li class="active"><a class="choosePage">${i}</a></li>`
+                    }else {
+                        page_label_Html += `<li class="disabled"><a class="choosePage">${i}</a></li>`
+                    }
+                }
+            }else{
+                for (let i =1;i<=4;i++){
+                    if (i==4 && page!=4)
+                    {
+                        break;
+                    }
+                    if (i == page){
+                        page_label_Html += `<li class="active"><a class="choosePage">${i}</a></li>`
+                    }else {
+                        page_label_Html += `<li class="disabled"><a class="choosePage">${i}</a></li>`
+                    }
+                }
+                page_label_Html += `<li>...</li>`
+                if (page>4){
+                    page_label_Html += `<li class="active"><a class="choosePage">${page}</a></li>`
+                }
+                if(page<page_num){
+                    page_label_Html +=`<li>...</li>`
+                    page_label_Html += `<li class="disabled"><a class="choosePage">${page_num}</a></li>`
+                }
+
+            }
+            page_label_Html = page_label_Html + '<li class="active"><a aria-label="Next"> <span aria-hidden="true" id = "next_page">&raquo;</span> </a> </li>'
+            $("#page-switch").html(page_label_Html)
+            $(".choosePage").click(function () {
+                console.log($(this).html())
+                const page = $(this).html()
+                dat_page[dat_type] = page
+                getCase(dat_type,page)
+
+            })
+            $("#pre_page").click(function () {
+                if (  dat_page[dat_type] == 1){
+                    return
+                }else
+                {
+                    dat_page[dat_type] = parseInt(dat_page[dat_type])-1
+                    getCase(dat_type,dat_page[dat_type])
+                }
+
+            })
+            $("#next_page").click(function () {
+                if (  dat_page[dat_type] == page_num){
+                    return
+                }else
+                {
+                    dat_page[dat_type] = parseInt(dat_page[dat_type])+1
+                    getCase(dat_type,  dat_page[dat_type])
+                }
+
+            })
+        }
+        function getCase(type,page) {
+            if(dat_type == type)
+            {
+                refresh_table(page)
+            }else {
+                $.ajax({
+                    url:'/case/'+type,
+                    type:'POST',
+                    success:function (data) {
+                        dat_restore = data
+                        dat_type = type
+                        refresh_table(page)
+                    }
+                })
+            }
+        }
+        getCase('raw',1)
+        $('#raw_li').addClass('active')
+    });
+</script>
+
+
+<script>
+
+
+
+
+
+
+</script>
+</body>
+</html>

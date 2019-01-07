@@ -1,0 +1,113 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>登陆 | 法官工作空间</title>
+
+	<link rel="stylesheet" th:href="@{css/bootstrap.css}"/>
+	<link rel="stylesheet" th:href="@{css/style.css}"/>
+	<link rel="stylesheet" th:href="@{css/login.css}"/>
+	<link rel="apple-touch-icon-precomposed" th:href="@{img/icon.png}">
+	<link rel="shortcut icon" th:href="@{img/favicon.ico}">
+	<script th:src="@{js/ref/jquery-2.1.4.min.js}"></script>
+	<script th:src="@{js/ref/jquerysession.js}"></script>
+
+	<!--[if gte IE 9]>
+	<script th:src="@{js/ref/jquery-1.11.1.min.js}"></script>
+	<script th:src="@{js/ref/html5shiv.min.js}"></script>
+	<script th:src="@{js/ref/respond.min.js}"></script>
+	<script th:src="@{js/ref/selectivizr-min.js}"></script>
+	<![endif]-->
+
+	<!--[if lt IE 9]>
+	<script>window.location.href='upgrade-browser.html';</script>
+	<![endif]-->
+</head>
+
+<body class="user-select">
+<div class="container">
+	<div class="siteIcon"><img th:src="@{img/icon.png}" alt="" data-toggle="tooltip" data-placement="top" title="法官工作空间间" draggable="false" /></div>
+	<p class="siteTitle" >法官工作空间</p>
+	<form method="post" autocomplete="off" class="form-signin">
+		<h2 class="form-signin-heading"></h2>
+		<label for="userName" class="sr-only">用户编号</label>
+		<input type="text" id="userName" name="username" class="form-control" onfocus="removeFailInfo()"
+			   placeholder="请输入用户名" required autofocus autocomplete="off" maxlength="10">
+		<label for="userPwd" class="sr-only">账号密码</label>
+		<input type="password" id="userPwd" name="userpwd" class="form-control" onfocus="removeFailInfo()"
+			   placeholder="请输入密码" required autocomplete="off" maxlength="18">
+		<div>
+			<label style="color : #FF2A1A; display: none;" id="failInfo">
+				登录失败，账号或密码错误
+			</label>
+		</div>
+		<!--<a href="manage.html">-->
+		<button class="btn btn-lg btn-primary btn-block" type="button" id="signinSubmit">登录</button>
+		<!--</a>-->
+	</form>
+	<!--<div class="footer">-->
+		<!--<p><a href="manage.html" data-toggle="tooltip" data-placement="left" title="不知道自己在哪?">回到后台 →</a></p>-->
+	<!--</div>-->
+</div>
+
+<script th:src="@{js/ref/bootstrap.min.js}"></script>
+<script>
+    $('[data-toggle="tooltip"]').tooltip();
+    window.oncontextmenu = function(){
+        //return false;
+    };
+    $('.siteIcon img').click(function(){
+        window.location.reload();
+    });
+
+    function removeFailInfo() {
+        $('#failInfo').css('display','none');
+    }
+
+    $('#signinSubmit').click(function(){
+        if($('#userName').val() === ''){
+            $('#failInfo').text('用户名不能为空');
+            $('#failInfo').css('display','block');
+
+        }else if($('#userPwd').val() === ''){
+            $('#failInfo').text('密码不能为空');
+            $('#failInfo').css('display','block');
+        }else{
+            // $(this).text('请稍后...');
+
+            $.ajax({
+                type:"post",
+                url:"/checkLogin",
+                data:{"username":$('#userName').val(),"password":$('#userPwd').val()},
+                // dataType:"json",
+                async:false,
+                success : function(data){
+
+                    if(data=='not exist'){
+                        $('#failInfo').text('用户名不存在');
+                        $('#failInfo').css('display','block');
+
+					}else if(data=='wrong'){
+                        $('#failInfo').text('用户名或密码错误');
+                        $('#failInfo').css('display','block');
+
+					}else{
+                        $('#failInfo').css('display','none');
+                        $.session.set("username",data);
+                        window.location.href = "/manage";
+					}
+
+                },error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.status);
+                    alert(XMLHttpRequest.readyState);
+                    alert(textStatus);
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

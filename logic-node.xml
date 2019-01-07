@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<graph>
+  <nodes>
+    <node nodeId="12" x="480" y="150">
+      <topic>结论</topic>
+      <type>结论</type>
+      <detail>系统自动生成的结论</detail>
+      <children>
+        <node nodeId="11" x="176" y="50">
+          <topic>事实1</topic>
+          <type>事实</type>
+          <detail>交通肇事罪</detail>
+          <children/>
+        </node>
+        <node nodeId="13" x="80" y="150">
+          <topic>中华人民共和国刑法_第六十七条</topic>
+          <type>法条</type>
+          <detail>犯罪以后自动投案,如实供述自己的罪行的,是自首。对于自首的犯罪分子,可以从轻或者减轻处罚。其中,犯罪较轻的,可以免除处罚。</detail>
+          <children/>
+        </node>
+        <node nodeId="14" x="176" y="250">
+          <topic>事实2</topic>
+          <type>事实</type>
+          <detail>故意伤害罪</detail>
+          <children/>
+        </node>
+      </children>
+    </node>
+    <node nodeId="2" x="80" y="300">
+      <topic>证据2</topic>
+      <type>证据</type>
+      <detail>现场勘验、检查笔录及照片，证明现场位于公主岭市张乙宅院。宅院大门北侧地面有一具男性尸体，尸体下方有血迹。宅院大门及院内有滴落血迹。现场血迹已提取。</detail>
+      <children/>
+    </node>
+    <node nodeId="1" x="80" y="350">
+      <topic>证据1</topic>
+      <type>证据</type>
+      <detail>test1</detail>
+      <children/>
+    </node>
+    <node nodeId="4" x="80" y="400">
+      <topic>证据4</topic>
+      <type>证据</type>
+      <detail>辨认笔录及照片，证明2014年12月27日，辨认人王某某、姜某某、张甲经过辨认程序，确定殷万友是致死陈某某的人。</detail>
+      <children/>
+    </node>
+    <node nodeId="5" x="80" y="450">
+      <topic>证据5</topic>
+      <type>证据</type>
+      <detail>扣押笔录及照片，证明2014年12月28日，公安机关扣押殷万友所持尖刀一把。</detail>
+      <children/>
+    </node>
+    <node nodeId="3" x="80" y="500">
+      <topic>证据3</topic>
+      <type>证据</type>
+      <detail>指认现场笔录及照片，证明2014年12月28日，被告人殷万友指认在公主岭市某村二队张乙家前屋是其与被害人陈某某发生口角的位置，在张乙家北面厨房是致死陈某某的位置，在张乙家北侧房门、北侧大门是其逃离现场位置。</detail>
+      <children/>
+    </node>
+    <node nodeId="6" x="80" y="550">
+      <topic>证据6</topic>
+      <type>证据</type>
+      <detail>物证尖刀（照片），开庭审理时出示尖刀照片，殷万友确认系其作案时所使用的工具。</detail>
+      <children/>
+    </node>
+    <node nodeId="7" x="80" y="600">
+      <topic>证据7</topic>
+      <type>证据</type>
+      <detail>法医学DNA鉴定意见，送检的陈某某血样的STR分型与尸体下方血迹、距住宅北门三米处血迹、院门上血迹、距住宅北门0．5米处血迹的STR分型一致。</detail>
+      <children/>
+    </node>
+    <node nodeId="8" x="80" y="650">
+      <topic>证据8</topic>
+      <type>证据</type>
+      <detail>尸检鉴定意见，证明陈某某系因胸部受锐器刺创致心脏破裂，急性失血性休克而死亡。</detail>
+      <children/>
+    </node>
+    <node nodeId="9" x="80" y="700">
+      <topic>证据9</topic>
+      <type>证据</type>
+      <detail>户籍材料，证明被告人殷万友和被害人陈某某的自然情况。</detail>
+      <children/>
+    </node>
+    <node nodeId="10" x="80" y="750">
+      <topic>证据10</topic>
+      <type>证据</type>
+      <detail>证人王某某证言，2014年12月27日中午，殷万友在张乙家的牌九局上与人聊天。13时许，陈某某酒后过来要推牌九，殷万友此时也要玩，陈某某骂殷万友并把殷万友头戴的帽子打掉。在场的人将二人分开，我让殷万友回家，他便离去，陈某某也要回走。相隔1分钟，我听见走廊有人打仗，过去见殷万友骑在陈某某的身上，我从后面抱住殷万友把他甩到一边，殷万友从北门跑掉，当时他手里拿一把刀。陈某某侧坐在地上，胸部和头部有血。我给姜某某打电话，让他帮我送陈某某去医院。到院外大道边上，我给120打电话未打通，给派出所打电话报案时，陈某某死了。</detail>
+      <children/>
+    </node>
+    <node nodeId="15" x="80" y="800">
+      <topic>结论222</topic>
+      <type>结论</type>
+      <detail>123</detail>
+      <children/>
+    </node>
+  </nodes>
+</graph>

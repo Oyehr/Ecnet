@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>查看证据链关系图 - 文书可视化工具集</title>
+
+    <link rel="stylesheet" th:href="@{css/bootstrap.css}"/>
+    <link rel="stylesheet" th:href="@{css/font-awesome.css}"/>
+    <link rel="stylesheet" th:href="@{css/index.css}"/>
+    <link rel="stylesheet" th:href="@{css/loading.css}" />
+    <link rel="stylesheet" th:href="@{css/common.css}"/>
+    <link rel="stylesheet" th:href="@{css/custom.css}" />
+
+    <script th:src="@{js/ref/jquery-3.2.1.min.js}"></script>
+    <script th:src="@{js/ref/jquery-ui.js}"></script>
+    <script th:src="@{js/ref/jquerysession.js}"></script>
+    <script th:src="@{js/ref/bootstrap.js}"></script>
+    <script th:src="@{js/ref/jtopo-0.4.8-min.js}"></script>
+    <script th:src="@{js/loading.js}"></script>
+    <script th:src="@{js/mytopo.js}"></script>
+    <script th:src="@{js/evidence.js}"></script>
+
+    <!--[if gte IE 9]>
+    <script th:src="@{js/ref/jquery-1.11.1.min.js}"></script>
+    <script th:src="@{js/ref/html5shiv.min.js}"></script>
+    <script th:src="@{js/ref/respond.min.js}"></script>
+    <script th:src="@{js/ref/selectivizr-min.js}"></script>
+
+    <![endif]-->
+    <!--[if lt IE 9]>
+    <script>window.location.href='upgrade-browser.html';</script>
+    <![endif]-->
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        if($.session.get('username')==null){
+            window.location.href="/login";
+        }else if($.session.get('cid')==null){
+            window.location.href="/manage";
+        }
+        /*]]>*/
+    </script>
+
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+            line-height: 1.42857143;
+            font-family: "Microsoft YaHei", "微软雅黑", "Lantinghei SC", "Open Sans", Arial, "Hiragino Sans GB", "STHeiti", "WenQuanYi Micro Hei", SimSun, sans-serif;
+        }
+        ol, li, nav, section{
+            outline: none;
+            transition: all 0.30s ease-in-out;
+            -webkit-transition: all 0.30s ease-in-out;
+            -moz-transition: all 0.30s ease-in-out;
+            -o-transition: all 0.30s ease-in-out;
+            -ms-transition: all 0.30s ease-in-out;
+        }
+        .navbar>.container-fluid .navbar-brand {
+            font-family: TaurusNormal;
+            font-size: 26px;
+            line-height: 26px;
+            color: #777;
+            margin-left: 0;
+        }
+        .breadcrumb a{
+            color: #555;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: #3399CC;
+            text-decoration: none;
+        }
+        /*.breadcrumb li {*/
+            /*font-size: 19px;*/
+        /*}*/
+        strong {
+            font-weight: bold;
+        }
+        .container-fluid{
+            padding-right: 0;
+            padding-left: 0;
+            margin-right: 0;
+            margin-left: 0;
+        }
+    </style>
+
+</head>
+<body class="user-select">
+<section class="container-fluid">
+    <div class="row">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">切换导航</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+                    <a class="navbar-brand" href="/manage" style="left: 0;">法官工作空间</a> </div>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="menu-label"><a id="userLabel" title="查看或修改个人信息" data-toggle="modal" data-target="#seeUserInfo">个人信息</a></li>
+                        <li><a id='exist_click'>退出登录</a></li>
+                    </ul>
+                    <form action="" method="post" class="navbar-form navbar-right" role="search">
+                        <div class="input-group">
+                            <input type="text" class="form-control" autocomplete="off" placeholder="键入关键字搜索" maxlength="15">
+                            <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">搜索</button>
+                            </span> </div>
+                    </form>
+                </div>
+            </div>
+            <ol class="breadcrumb" style="font-size: 19px;">
+                <li>
+                    <a href="/upload">质证与采信</a>
+                </li>
+                <li><strong>
+                    <a class="active" href="/model">证据链建模</a></strong>
+                </li>
+                <li >
+                    <a href="/logic-new">说理逻辑</a>
+                </li>
+                <li >
+                    <a href="text.html">说理语段</a>
+                </li>
+
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row" style="background: white;padding-top: 150px;padding-left: 4%">
+        <div style="font-size: 17px;">
+            <div>案号：<span id="caseNum"></span>, 案由：<span id="caseBrief"></span></div>
+            <div>案件名称：<span id="caseName"></span></div>
+            <div>承办人：<span id="underTaker"></span>，立案日期：<span id="caseDate"></span></div>
+        </div>
+
+        <div id="mainPanel" style="margin-top: 40px;">
+            <a id="list_hide" style="font-size: 16px;" href="#">隐藏<<</a><br/>
+            <div style="display: inline-block;width: 28%;min-height: 300px;vertical-align: top;margin-top:15px;" id="list_div">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title" style="font-size: 16px;">
+                            <a data-toggle="collapse" href="#adoption">
+                                已采信证据
+                            </a>
+                        </h4>
+                    </div>
+
+
+                    <div id="adoption" class="panel-collapse collapse in">
+                        <div class="panel-body" style="padding: 0;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title" style="font-size: 16px;">
+                            <a data-toggle="collapse" href="#rejection">
+                                未采信证据
+                            </a>
+                        </h4>
+                    </div>
+
+
+                    <div id="rejection" class="panel-collapse collapse in">
+                        <div class="panel-body" style="padding: 0;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title" style="font-size: 16px;">
+                            <a data-toggle="collapse" href="#importFacts">
+                                载入事实
+                            </a>
+                        </h4>
+                    </div>
+
+
+                    <div id="importFacts" class="panel-collapse collapse in">
+                        <div class="panel-body" style="padding: 0;">
+                            <textarea id="factArea" class="form-control" rows="5"></textarea>
+                            <br/>
+
+                            <div class="btn-toolbar operation" role="toolbar">
+                                <div class="btn-group" role="group">
+                                    <a class="btn btn-default" onClick="splitFacts()">分解事实</a>
+                                    <a class="btn btn-default" onClick="getJoints()">提取联结点</a>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button type="submit" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" name="checkbox_delete" onclick="addFactElmt()">新增</button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button type="submit" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" name="checkbox_delete" onclick="clearFactDiv()">清空</button>
+                                </div>
+                                <!--<div class="btn-group" role="group">-->
+                                    <!--<button type="submit" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="" name="checkbox_delete" onclick="exportToModel()">导出图元</button>-->
+                                <!--</div>-->
+                            </div>
+
+                            <div id="factListDiv">
+                                <br>
+                                <br>
+                                <br>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: inline-block;width: 70%;min-height: 300px;vertical-align: top;margin-top:10px;padding-bottom: 50px;" id="graph_div">
+                <div class="page-content container10" style="top:0;">
+                    <div class="row">
+                        <!--&lt;!&ndash;文件选择框以及文件相关操作面板&ndash;&gt;-->
+                        <!--<section class="file-wrapper col-md-12">-->
+                        <!--<input id="file-choose-btn" type="file">-->
+                        <!--</section>-->
+
+                        <div style="width:80%;">
+                            <div style="width:40%;display: inline-block;">
+                                <label for="factSelector" >事实列表</label>
+                                <!--<input class="form-control" id="body-evidenceType"/>-->
+                                <select class="form-control" id="factSelector" title="选中可定位图中位置" style="display:inline-block;width: 80%;height:30px;margin-left: 2%;padding: 2px 10px;">
+                                    <option value='-1'>请选择</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" style="display: inline-block;margin-left:3%;width: 10%;" data-toggle="modal" data-target="#recycleBin">
+                                <i class="fa fa-trash-o"></i>&nbsp;回收站</button>
+
+                            <div class="modal fade" tabindex="-1" role="dialog" id="recycleBin">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title"><i class="fa fa-trash"></i>&nbsp;回收站（未采信证据）</h4>
+                                        </div>
+                                        <div class="modal-body" id="recycleBin_body">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                            <button type="button" class="btn btn-primary" id="addToAcceptance">添加到采信列表</button>
+                                        </div>
+                                    </div><!-- /.modal-content -->
+                                </div><!-- /.modal-dialog -->
+                            </div><!-- /.modal -->
+                        </div>
+
+                        <div>
+                            <!--图元面板-->
+                            <section class="graph-primitive-wrapper col-md-6" style="margin-top: 22px;padding-left: 0;">
+                                <div id='draggableDiv' class="ui-widget-content" style="z-index: 1000;position: absolute;">
+                                </div>
+
+                                <div class = 'btn-group' style="margin-left: 0;">
+                                    <div id="add-body-btn" class="btn-primary btn-sm btn" title="证据链体是指证据链节中, 除证据链头之外的证据链节的主体部分。   拖拽此按钮或者使用快捷键  b">
+                                        <i class="fa  fa-sticky-note-o" aria-hidden="true"></i> 链体</div>
+                                    <button id="add-body-btn-toggle" class="btn-default btn-sm btn toggle" data-toggle="toggle" title="按下快速绘图按钮，可连续绘制">
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+
+                                <div class = 'btn-group' >
+                                    <div id="add-header-btn" class="btn-primary btn-sm btn"
+                                         title="证据链头是两个相互印证的证据链节中一证据被他证据相印证的部分。   拖拽此按钮">
+                                        <i class="fa fa-circle-o" aria-hidden="true"></i> 链头
+                                    </div>
+                                    <button id="add-header-btn-toggle" class="btn-default btn-sm btn toggle" data-toggle="toggle" title="按下快速绘图按钮，可连续绘制">
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+
+                                <div class = 'btn-group'>
+                                    <div id="add-joint-btn" class="btn-primary btn-sm btn"
+                                         title="所谓证据联结点, 简而言之, 就是案件中作为证据链节表现形式的证据与证据之间相互印证的地方。  拖拽此按钮">
+                                        <i class="fa fa-chain" aria-hidden="true"></i> 联结点
+                                    </div>
+                                    <button id="add-joint-btn-toggle" class="btn-default btn-sm btn toggle" data-toggle="toggle" title="按下快速绘图按钮，可连续绘制">
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+
+                                <div class = 'btn-group'>
+                                    <div id="add-fact-btn" class="btn-primary btn-sm btn"
+                                         title="拖拽此按钮">
+                                        <i class="fa fa-square-o" aria-hidden="true"></i> 事实
+                                    </div>
+                                    <button id="add-fact-btn-toggle" class="btn-default btn-sm btn toggle" data-toggle="toggle" title="按下快速绘图按钮，可连续绘制">
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+
+                                <div class = 'btn-group'>
+                                    <button id="zoomOut-btn" class="btn-default btn-sm btn">放大</button>
+                                    <button id="zoomIn-btn" class="btn-default btn-sm btn">缩小</button>
+                                    <div class="checkbox" style="display: inline-block;margin: 5px 0 0 3px;">
+                                        <label>
+                                            <input type="checkbox" id="zoomSelection"> 鼠标缩放
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class = 'btn-group' style="margin-left: 2%;">
+                                    <input class="mui-switch" type="checkbox" id="boxSelection">
+                                    <span style="vertical-align:bottom;font-size: 16px;">支持框选</span>
+                                </div>
+                            </section>
+
+                            <!--绘图相关操作面板-->
+                            <section class="graph-tools-wrapper col-md-6" style="margin-top: 22px;">
+                                <a id="save-btn" class="btn btn-primary btn-sm">保存</a>
+                                <a id="revoke-btn" class="btn btn-warning btn-sm">撤销</a>
+                                <a id="saveImg-btn" class="btn btn-info btn-sm">导出PNG</a>
+                                <a id="saveExcel-btn" class="btn btn-success btn-sm"
+                                   title="此操作会先保存">导出Excel</a>
+                                <a id="saveXML-btn" class="btn btn-warning btn-sm">导出XML</a>
+                                <!--<a id="print-btn" class="btn btn-info btn-sm">打印此图</a>-->
+                                <a id="layout-btn" class="btn btn-default btn-sm">自动排版</a>
+                            </section>
+                        </div>
+
+                        <!--证据链集图-->
+                        <!--startprint-->
+                        <div class="graph-wrapper col-md-9 show-bar" style="margin-top: 20px;" id="canvasDiv">
+                            <canvas id="canvas" width="3800" height="3800"></canvas>
+                        </div>
+                        <!--endprint-->
+
+                        <ul id="stageMenu" class="dropdown-menu menu_graph">
+                            <li class="dropdown-submenu">
+                                <a>新增图元</a>
+                                <ul class="dropdown-menu">
+                                    <li id="add-header-li"><a>链头</a></li>
+                                    <li id="add-body-li"><a>链体</a></li>
+                                    <li id="add-joint-li"><a>联结点</a></li>
+                                    <li id="add-fact-li"><a>事实</a></li>
+                                </ul>
+                            </li>
+                            <li id="paste-element-li"><a>粘贴图元</a></li>
+                        </ul>
+
+                        <ul id="nodeMenu" class="dropdown-menu menu_graph">
+                            <li class="copy-element-li"><a>复制图元</a></li>
+                            <li class="delete-element-li"><a>删除图元</a></li>
+                        </ul>
+
+                        <ul id="nodeMenu2" class="dropdown-menu menu_graph">
+                            <li id="add-link-li"><a>创建连线</a></li>
+                            <li class="copy-element-li"><a>复制图元</a></li>
+                            <li class="delete-element-li"><a>删除图元</a></li>
+                        </ul>
+
+                        <ul id="nodeMenu3" class="dropdown-menu menu_graph">
+                            <li id="add-arrow-li"><a>创建箭头</a></li>
+                            <li class="copy-element-li"><a>复制图元</a></li>
+                            <li class="delete-element-li"><a>删除图元</a></li>
+                        </ul>
+
+                        <ul id="linkMenu" class="dropdown-menu menu_graph">
+                            <li id="delete-link-li"><a>删除连线</a></li>
+                        </ul>
+
+                        <ul id="arrowMenu" class="dropdown-menu menu_graph">
+                            <li id="delete-arrow-li"><a>删除箭头</a></li>
+                        </ul>
+
+                        <!--图元信息面板-->
+                        <section class="graph-info-wrapper col-md-3">
+
+                            <div class="panel panel-default" id="body-panel" data-bid="" hidden>
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion"
+                                           href="#collapseBody">
+                                            链体
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseBody" class="panel-collapse collapse in">
+                                    <div class="panel-body">
+                                        <form id="bodyForm">
+                                            <div class="form-group">
+                                                <label for="body-name">证据名称</label>
+                                                <input class="form-control" id="body-name"/>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="body-evidenceType">证据类型</label>
+                                                <!--<input class="form-control" id="body-evidenceType"/>-->
+                                                <select class="form-control" id="body-evidenceType">
+                                                    <option value ="0">证人证言</option>
+                                                    <option value ="1">被告人供述和辩解</option>
+                                                    <option value="2">书证</option>
+                                                    <option value="3">鉴定结论</option>
+                                                    <option value="4">勘验、检查笔录</option>
+                                                    <option value="5">其他</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="body-committer">提交人</label>
+                                                <input class="form-control" id="body-committer"/>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="body-evidenceReason">质证理由</label>
+                                                <input class="form-control" id="body-evidenceReason"/>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="body-evidenceConclusion">质证结论</label>
+                                                <select class="form-control" id="body-evidenceConclusion">
+                                                    <option value ="0">不采信</option>
+                                                    <option value ="1">采信</option>
+                                                </select>
+                                            </div>
+
+
+                                            <div class="form-group">
+                                                <label for="body-content">证据明细</label>
+                                                <textarea class="form-control" rows="5" id="body-content"></textarea>
+                                            </div>
+
+                                        </form>
+
+                                        <div class="pull-right">
+                                            <button id="body-save-btn" class="btn btn-success btn-sm">保存</button>
+                                            <button id="body-reset-btn" class="btn btn-warning btn-sm">重置</button>
+                                            <button id="body-del-btn" class="btn btn-danger btn-sm">删除图元</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="panel panel-default" id="head-panel" data-hid="" hidden>
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion"
+                                           href="#collapseHead">
+                                            链头
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseHead" class="panel-collapse collapse in">
+                                    <div class="panel-body">
+                                        <form id="headForm">
+                                            <div class="form-group">
+                                                <label for="head-name">链头名称</label>
+                                                <input class="form-control" id="head-name"/>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="head-keySentence">关键文本</label>
+                                                <input class="form-control" id="head-keySentence"/>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="head-content">链头内容</label>
+                                                <textarea class="form-control" rows="5" id="head-content"></textarea>
+                                            </div>
+
+                                        </form>
+
+                                        <div class="pull-right">
+                                            <button id="head-save-btn" class="btn btn-success btn-sm">保存</button>
+                                            <button id="head-reset-btn" class="btn btn-warning btn-sm">重置</button>
+                                            <button id="head-del-btn" class="btn btn-danger btn-sm">删除图元</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="panel panel-default" id="arrow-panel" data-aid="" hidden>
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion"
+                                           href="#collapseArrow">
+                                            箭头
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseArrow" class="panel-collapse collapse in">
+                                    <div class="panel-body">
+                                        <form id="arrowForm">
+                                            <div class="form-group">
+                                                <label for="arrow-name">箭头标题</label>
+                                                <input class="form-control" id="arrow-name"/>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="arrow-content">箭头简介</label>
+                                                <input class="form-control" id="arrow-content"/>
+                                            </div>
+                                        </form>
+
+                                        <div class="pull-right">
+                                            <button id="arrow-save-btn" class="btn btn-success btn-sm">保存</button>
+                                            <button id="arrow-reset-btn" class="btn btn-warning btn-sm">重置</button>
+                                            <button id="arrow-del-btn" class="btn btn-danger btn-sm">删除图元</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="panel panel-default" id="joint-panel" data-jid="" hidden>
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion"
+                                           href="#collapseJoint">
+                                            联结点
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseJoint" class="panel-collapse collapse in">
+                                    <div class="panel-body">
+                                        <form id="jointForm">
+                                            <div class="form-group">
+                                                <label for="joint-name">联结点名称</label>
+                                                <input class="form-control" id="joint-name"/>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="joint-content">联结点内容</label>
+                                                <input class="form-control" id="joint-content"/>
+                                            </div>
+                                        </form>
+
+                                        <div class="pull-right">
+                                            <button id="joint-save-btn" class="btn btn-success btn-sm">保存</button>
+                                            <button id="joint-reset-btn" class="btn btn-warning btn-sm">重置</button>
+                                            <button id="joint-del-btn" class="btn btn-danger btn-sm">删除图元</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="panel panel-default" id="fact-panel" data-jid="" hidden>
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion"
+                                           href="#collapseJoint">
+                                            事实
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseFact" class="panel-collapse collapse in">
+                                    <div class="panel-body">
+                                        <form id="factForm">
+                                            <div class="form-group">
+                                                <label for="fact-name">事实名称</label>
+                                                <input class="form-control" id="fact-name"/>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="fact-content">事实内容</label>
+                                                <textarea class="form-control" rows="5" id="fact-content"></textarea>
+                                            </div>
+                                        </form>
+
+                                        <div class="pull-right">
+                                            <button id="fact-save-btn" class="btn btn-success btn-sm">保存</button>
+                                            <button id="fact-reset-btn" class="btn btn-warning btn-sm">重置</button>
+                                            <button id="fact-del-btn" class="btn btn-danger btn-sm">删除图元</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+</body>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var username = $.session.get('username');
+    $('#userLabel').text(username);
+    var cid = $.session.get('cid');
+
+    $('#exist_click').click(function () {
+        if(confirm('是否确认退出？'))
+        {
+            $.session.remove('username');
+            window.location.href = '/login';
+        }
+    });
+
+    $(function(){
+        $("#list_hide").click(
+            function(){
+
+                if($("#list_div").width()=="0"){
+                    $("#list_div").animate({ opacity: "1",width: "28%"}, { duration: 800});
+                    $("#graph_div").animate({ width: "70%"}, { duration: 800});
+                    $("#list_hide").html("隐藏<<");
+                }else{
+                    $("#list_div").animate({  opacity: "0",width: "0"}, { duration: 800});
+                    $("#graph_div").animate({ width: "98%"}, { duration: 800});
+                    $("#list_hide").html("显示>>");
+                }
+            });
+    });
+
+    function notify(tip) {
+        var $this = $("body");
+        return $this.each(function(){
+            if($(".cpt-loading-mask[data-name='loading']").length > 0){
+                // console.error('loading mask cant has same date-name('+opt.name+'), you cant set "date-name" prop when you create it');
+                return
+            }
+
+            var smallLoadingMargin = '-6px';
+
+            //悬浮层
+            var cpt_loading_mask = $('<div class="cpt-loading-mask animated row" data-name="loading"></div>').css({
+                // 'z-index':999,
+                'position':'fixed',
+                'bottom':'-44px',
+                'left':0,
+                'top':'auto',
+                'width':'100%',
+                'height':'44px',
+                'background':'#3498db',
+                'color':'#FFF',
+                'line-height':'44px',
+                'vertical-align':'middle',
+                'font-size':'16px',
+                'transition':'background .2s linear',
+                '-webkit-transition':'background .2s linear',
+                'opacity':0
+            });
+
+            //中间的显示层
+            var div_loading = $('<div class="div-loading" style="left: 80px;top: 20px"></div>').css({
+                'background':'transparent',
+                'height':44,
+                'padding':5
+            }).appendTo(cpt_loading_mask);
+
+            //loading标题
+            var loading_title = $('<p style="display: inline-block;margin-left: 15px" id="load_info"></p>').html(tip).appendTo(div_loading);
+
+            //loading转动的小圆球
+            var loading = $('<div class="loading origin" style="width: 15px;height: 15px;margin-top: 5px;margin-left: 20px;" id="rotate_circle"></div>').appendTo(div_loading);
+
+            var loadingOrigin = $('<div class="div-loadingOrigin"><span></span></div><div class="div-loadingOrigin"><span></span></div><div class="div_loadingOrigin"><span></span></div><div class="div_loadingOrigin"><span></span></div><div class="div_loadingOrigin"><span></span></div>').appendTo(loading);
+            loadingOrigin.children().css({
+                "margin-top":smallLoadingMargin,
+                "margin-left":smallLoadingMargin,
+                "width":3,
+                "height":3,
+                "background":'#fefefe'
+            });
+
+            //关闭事件冒泡  和默认的事件
+            cpt_loading_mask.on('touchstart touchend touchmove click',function(e){
+                e.stopPropagation();
+                e.preventDefault();
+            });
+            cpt_loading_mask.appendTo(this);
+            cpt_loading_mask.animate({
+                bottom: 0,
+                opacity:1
+            }, 1000);
+        });
+    }
+
+    function removeNotify(tip){
+        var cpt = $(".cpt-loading-mask[data-name='loading']");
+        cpt.css({
+            'background':'#2ecc71'
+        });
+        $('#rotate_circle').html("<span><i class='fa fa-check'></i></span>");
+        $('#load_info').html(tip);
+        cpt.animate({
+            bottom: "-44px",
+            opacity:0
+        }, 900, "", function() {
+            $(this).remove()
+        });
+    }
+    /*]]>*/
+</script>
+</html>
